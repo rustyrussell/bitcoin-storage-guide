@@ -1,0 +1,315 @@
+#! /bin/bash
+# Simple script to save typos and other frustrations for offline wallets.
+
+# Exit on any unexpected error.
+trap "echo FAILED >&2; stop_bitcoin" EXIT
+set -e
+
+# Debs are on the USB key
+DEB_DIR=/media/ubuntu/*
+DEBS_AMD64="bitcoind_0.12.1-xenial1_amd64.deb libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb libdb4.8++_4.8.30-xenial2_amd64.deb libevent-core-2.0-5_2.0.21-stable-2_amd64.deb libevent-pthreads-2.0-5_2.0.21-stable-2_amd64.deb libssl1.0.0_1.0.2g-1ubuntu4.1_amd64.deb qrencode_3.4.4-1_amd64.deb libqrencode3_3.4.4-1_amd64.deb"
+DEBS_X86="bitcoind_0.12.1-xenial1_i386.deb libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb libdb4.8++_4.8.30-xenial2_i386.deb libevent-core-2.0-5_2.0.21-stable-2_i386.deb libevent-pthreads-2.0-5_2.0.21-stable-2_i386.deb libssl1.0.0_1.0.2g-1ubuntu4.1_i386.deb qrencode_3.4.4-1_i386.deb libqrencode3_3.4.4-1_i386.deb"
+
+info()
+{
+    [ -f /tmp/.didnt_read_howto ] || echo "$@"
+}
+
+prompt()
+{
+    if [ -f /tmp/.didnt_read_howto ]; then echo -n "?"; else echo -n "$@"; fi
+}
+
+try()
+{
+    info -n "$1"...
+    shift
+    if eval "$@"; then info SUCCESS; else info FAILED; return 1; fi
+}
+
+check_debs()
+{
+    declare -A SHAS
+    # Here are all the SHAs off my system (installed via apt, so sigs checked)
+    SHAS[bitcoind_0.12.1-xenial1_amd64.deb]=3991ff69a769a2caff345af97e7f2e23b15ab883a57c9105d019b18fbc27dd59
+    SHAS[libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb]=756f961b8e30cda2e55f275dc34c5f519ce41e0f48e105d305b7f70bd22a8160
+    SHAS[libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb]=445572e209e156429135f33274e0024bb63d8289acee21602655ef210a8563e8
+    SHAS[libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb]=b0b07b33690e8b65019298ad1fd847b5b6a536c69c717bd4fee5a0ad51587eed
+    SHAS[libdb4.8++_4.8.30-xenial2_amd64.deb]=b2dc543aa1e950cedf17b2e2a64e66f48a1da58d0efee766dee03fff17150d24
+    SHAS[libevent-core-2.0-5_2.0.21-stable-2_amd64.deb]=101c8c4a1d6e05ddea8c63220a3d06ea1e179b3ac331d6c47d61c28b1e004af7
+    SHAS[libevent-pthreads-2.0-5_2.0.21-stable-2_amd64.deb]=706beab6ce8d36d8c9b3892e39632fc3906c0c9c1974c970e62fb4d0f57c6d39
+    SHAS[libssl1.0.0_1.0.2g-1ubuntu4.1_amd64.deb]=0b693736fb3799c6d982ed57a8ee764334171bc57a73f7ead3c22c7d10e8872e
+    SHAS[qrencode_3.4.4-1_amd64.deb]=ca0d5f659685c564eeff01b66d502152288f7e0b84e45934e2b603e4999d3d07
+    SHAS[libqrencode3_3.4.4-1_amd64.deb]=7009fa11f64236628dfbb5d247b21b157777712ad938e50e2e01ebf9696a6acd
+
+    # Here are all the SHAs for i386 (checked against those installed in vm via apt)
+    SHAS[bitcoind_0.12.1-xenial1_i386.deb]=2db08cb35d81e7d78fe53a561dfbbf3d24b6da328e3de8ef7d8d346d9b4f4158
+    SHAS[libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb]=226f7371f3c9817a94adca2a41a962fc369889790f3c272173be51586c4ec803
+    SHAS[libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb]=11a304f7a2b3b862835a45245fffd3262624475c9b82dbd9f4b6912ed22e89ba
+    SHAS[libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb]=9dbf083301c7b47d86d6bfef933469e59bf99dc58d40065007f8a8fecbc8f813
+    SHAS[libdb4.8++_4.8.30-xenial2_i386.deb]=5e504e81a5e6877cd9c030840fd80181aada112ff31bd5a5035d993331ba7d7b
+    SHAS[libevent-core-2.0-5_2.0.21-stable-2_i386.deb]=2aaa15157a1cd66ef8df6a7c15e786ab39973502b3e280b115722162c2146fd1
+    SHAS[libevent-pthreads-2.0-5_2.0.21-stable-2_i386.deb]=987479fa2419990fc53e116f50304b6a473f9cce186c9d231bc7599bb1c1b326
+    SHAS[libqrencode3_3.4.4-1_i386.deb]=89ff4ca9bdb258b99ce3ef20675005473ea6e36d5c67914167301d85e54e4010
+    SHAS[libssl1.0.0_1.0.2g-1ubuntu4.1_i386.deb]=fab6ce738a4c80a876dcce43d2f270ec601eebab054959fa0abbc6f5a69be43b
+    SHAS[qrencode_3.4.4-1_i386.deb]=80b702112fbba82215c36cf8a2bde70c52c6d86fad294e9df268814f3c84a992
+
+    for pkg; do
+	if [ `sha256sum $pkg | cut -c1-64` != ${SHAS[$pkg]} ]; then
+	    info "Bad $pkg"
+	    return 1
+	fi
+    done
+}
+
+start_bitcoin()
+{
+    rm -f /home/ubuntu/.bitcoin/wallet.dat
+    info -n "Starting bitcoin daemon"...
+    bitcoind &
+
+    i=0
+    while [ $i -lt 20 ]; do
+	if bitcoin-cli getinfo >/dev/null 2>&1; then info SUCCESS; return 0; fi
+	sleep 0.5
+	i=$(($i+1))
+    done
+    info FAILED
+    exit 1
+}
+
+stop_bitcoin()
+{
+    bitcoin-cli stop 2>/dev/null
+}
+
+flip_coin()
+{
+    case `od -N1 -tx1 -A none < /dev/urandom | cut -c2` in
+	[01234567]*) return 1;;
+	[89abcdef]*) return 0;;
+    esac
+    info "Unexpected /dev/urandom"
+    exit 1
+}
+    
+new_key()
+{
+    info -n "Generating address..."; sleep 1
+    ADDR=`bitcoin-cli getnewaddress`
+    PRIVKEY=`bitcoin-cli dumpprivkey $ADDR`
+    info SUCCESS
+
+    echo
+    echo "Public address: $ADDR"
+    echo "Private key (keep secret!): $PRIVKEY"
+    echo ""
+    prompt "Press Enter..."
+    read
+    
+    # You can't use these without checking them!
+    unset ADDR
+    unset PRIVKEY
+}
+
+check_key()
+{
+    prompt "Enter your private key (UPPER and lower case matters!): "
+    read -e PRIVKEY
+
+    # There's no good way to figure out the address, except diff before
+    # and after.  Blech!
+    bitcoin-cli getaddressesbyaccount "" | sed -n 's/^ *"\(.*\)".*$/\1/p' > /tmp/before
+    if try "Importing private key" "bitcoin-cli importprivkey $PRIVKEY 2>/dev/null"; then
+	echo "Key is VALID!"
+	bitcoin-cli getaddressesbyaccount "" | sed -n 's/^ *"\(.*\)".*$/\1/p'> /tmp/after
+	ADDR=`diff -u /tmp/before /tmp/after | sed -n 's/^+\([^+]\)/\1/p'`
+	if [ -z "$ADDR" ]; then
+	    echo "Re-import of existing key?  Please enter address:"
+	    cat /tmp/after
+	    read ADDR
+	else
+	    echo "Public address: $ADDR"	    
+	fi
+
+	info Press return to clear the screen.
+	read
+	clear
+    else
+	echo 'Invalid private key (starts with L or K)'
+	unset PRIVKEY
+    fi
+}
+
+spend_tx()
+{
+    prompt "Enter transaction ID (64 characters) or raw transaction: "
+    read -e -i "$TX" TX 
+
+    # We assume input was a standard pay to pubkey hash, and fool bitcoind
+    # into generating one for us.
+    info -n "Generating pubkey for $ADDR..."
+    SCRIPTPUBKEY=`bitcoin-cli createrawtransaction '[{"txid":"0000000000000000000000000000000000000000000000000000000000000000","vout":0}]' '{"'$ADDR'":0}' | cut -c113-162`
+    info SUCCESS
+
+    if echo "$TX" | egrep -q '^[A-Fa-f0-9]{64}$'; then
+	TXID="$TX"
+	prompt "Enter output number which paid to $ADDR (first is 0, second is 1, etc): "
+	read -e -i "$VOUT" VOUT
+	prompt "Enter amount it paid (in bitcoins): "
+	read -e -i "$INPUT_AMOUNT" INPUT_AMOUNT
+    else
+	if try "Decoding transaction" "bitcoin-cli decoderawtransaction $TX >/dev/null"; then
+	    # Crappy parsing FTL...
+	    SIMPLIFIED=`bitcoin-cli decoderawtransaction $TX | tr -d ' "'`
+	    TXID=`echo "$SIMPLIFIED" | awk -F'[,:]' '{if ($1 == "txid") { print "$2"; exit } }'`
+	    VOUT=`echo "$SIMPLIFIED" | awk -F'[,:]' '{if ($1 == "n") { N=$2; } if ($1 == "'$ADDR'") print N; }'`
+	    case "$VOUT" in
+		'')
+		    echo Could not find any output in $TXID paying to $ADDR
+		    return
+		    ;;
+		'* *')
+		    echo Found multiple outputs in $TXID paying to $ADDR: $VOUT
+		    return
+		    ;;
+		*)
+		    INPUT_AMOUNT=`echo $SIMPLIFIED | awk -F'[,:]' '{if ($1 == "n") { N=$2; } if (N == '$VOUT' && $1 == "value") print $2; }'`
+		    INPUT_SCRIPTPUBKEY=`echo $SIMPLIFIED | awk -F'[,:]' '{if ($1 == "n") { N=$2; } if (N == '$VOUT' && $1 == "hex") print $2; }'`
+		    if [ "$INPUT_SCRIPTPUBKEY" != "$SCRIPTPUBKEY" ]; then
+			echo $TXID output $VOUT has unusual scriptpubkey "$INPUT_SCRIPTPUBKEY" not "$SCRIPTPUBKEY".  Please report!
+			return
+		    fi
+	    esac
+	    echo "Transaction ID:" $TXID
+	    echo "Output number:" $VOUT
+	    echo "Amount: " $INPUT_AMOUNT
+	else
+	    return
+	fi
+    fi
+
+    prompt "Fee per kilobyte (in satoshis, eg 100000): "
+    read -e -i "$FEE_RATE" FEE_RATE
+    prompt "Address to send to: "
+    read -e -i "$DEST_ADDR" DEST_ADDR
+
+    prompt "Amount to send (hit ENTER to send as much as possible): "
+    read -e -i "$DEST_AMOUNT" DEST_AMOUNT
+
+    if [ -n "$DEST_AMOUNT" ]; then
+	prompt "Address for change: "
+	read -e -i "$CHANGE_ADDR" CHANGE_ADDR
+
+	# Tx with two outputs is about 225 bytes.
+	FEE=`echo "scale=8; $FEE_RATE * 225 / 1000 / 10^8" | bc`
+	CHANGE_AMOUNT=`echo "scale=8; $INPUT_AMOUNT - $DEST_AMOUNT - $FEE" | bc`
+
+	# Sanity check for tiny or negative change (or weird fee).
+	if [ `echo "$CHANGE_AMOUNT < $FEE" | bc` = 1 ]; then
+	    echo "Change amount $CHANGE_AMOUNT too small (fee is $FEE)"
+	    return
+	fi
+    else
+	# Tx with one output is about 192 bytes.
+	FEE=`echo "scale=8; $FEE_RATE * 192 / 1000 / 10^8" | bc`
+	DEST_AMOUNT=`echo "scale=8; $INPUT_AMOUNT - $FEE" | bc`
+	CHANGE_ADDR=""
+    fi
+
+    # Sanity check fee.
+    if [ `echo "$FEE > $INPUT_AMOUNT" | bc` = 1 ]; then
+	echo Fee $FEE is greater than input amount $INPUT_AMOUNT
+	return
+    fi
+
+    echo -n "Spending $INPUT_AMOUNT to send $DEST_AMOUNT to $DEST_ADDR"
+    if [ -n "$CHANGE_ADDR" ]; then
+	echo " (change to $CHANGE_ADDR)"
+    else
+	echo
+    fi
+    echo "Paying miners a fee of $FEE (`echo "scale=4; $FEE * 100 / $DEST_AMOUNT" | bc`%)"
+    
+    if [ `echo "$FEE > 0.001" | bc` = 1 ]; then
+	echo WARNING: Fee of $FEE bitcoins seems really large.
+	echo This fee goes straight to the miners.
+	# Simply refuse to pay more than 5% fee ever.
+	if [ `echo "$FEE * 20 >= $DEST_AMOUNT" | bc -l` = 1 ]; then
+	    echo Refusing to let you do that.  Sorry.
+	    return
+	fi
+    fi
+
+    # Create transaction.
+    info -n "Creating raw transaction..."
+    if [ -n "$CHANGE_AMOUNT" ]; then
+	# Random order of dest, change
+	if flip_coin; then
+	    OUTS='{"'$DEST_ADDR'":'$DEST_AMOUNT',"'$CHANGE_ADDR'":'$CHANGE_AMOUNT'}'
+	    echo "(output 1 is our change)"
+	else
+	    OUTS='{"'$CHANGE_ADDR'":'$CHANGE_AMOUNT',"'$DEST_ADDR'":'$DEST_AMOUNT'}'
+	    echo "(output 0 is our change)"
+	fi
+    else
+	OUTS='{"'$DEST_ADDR'":'$DEST_AMOUNT'}'
+    fi
+    RAW_TX=`bitcoin-cli createrawtransaction '[{"txid":"'$TXID'","vout":'$VOUT'}]' "$OUTS"`
+    info SUCCESS
+
+    info -n "Signing raw transaction..."
+    SIGNED_TX=`bitcoin-cli signrawtransaction $RAW_TX '[{"txid":"'$TXID'","vout":'$VOUT',"scriptPubKey":"'$SCRIPTPUBKEY'"}]'`
+    info SUCCESS
+
+    echo "Payment to broadcast: $SIGNED_TX"
+    qrencode -i -t UTF8 "$SIGNED_TX"
+}
+
+# People will try very hard to lose money, let's try not to help them.
+if ping -n -q -c1 8.8.8.8 >/dev/null 2>&1 || [ ! -d $DEB_DIR ]; then
+    info Read HOWTO thoroughly for help.
+    touch /tmp/.didnt_read_howto
+fi
+
+case `uname -m` in
+    x86_64) DEBS="$DEBS_AMD64";;
+    i*86) DEBS="$DEBS_X86";;
+    *) echo Unsupported platform `uname -m` >&2;;
+esac
+
+try "Checking bitcoind and friends" "cd $DEB_DIR && check_debs $DEBS"
+
+try "Installing bitcoind and friends" "cd $DEB_DIR && sudo dpkg -i $DEBS >/dev/null"
+
+start_bitcoin
+info
+
+while true; do
+    info "Rusty's Remarkable Unreliable Bitcoin Storage Script"
+    info "----------------------------------------------------"
+    info "create - Create a new private key and public address."
+    info "restore - Restore a private key and check it is valid."
+    [ -z "$PRIVKEY" ] || info "spend - spend a transaction with a private key."
+    info "(To quit, just power off the entire machine)"
+    prompt "What do you want to do? "
+    read CHOICE
+    case "$CHOICE" in
+	create)
+	    new_key
+	    ;;
+	restore)
+	    check_key
+	    ;;
+	spend)
+	    if [ -z "$PRIVKEY" ]; then
+		info "Use 'check' to enter the private key first"
+	    else
+		spend_tx
+	    fi
+	    ;;
+	*)
+	    info "I don't understand that?"
+	    ;;
+    esac
+done
