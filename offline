@@ -210,12 +210,17 @@ spend_tx()
 	    echo "Change amount $CHANGE_AMOUNT too small (fee is $FEE)"
 	    return
 	fi
+	# JSON can't handle ".1234"... it needs "0."
+	CHANGE_AMOUNT=`echo "$CHANGE_AMOUNT" | sed 's/^\./0./'`
     else
 	# Tx with one output is about 192 bytes.
 	FEE=`echo "scale=8; $FEE_RATE * 192 / 1000 / 10^8" | bc`
 	DEST_AMOUNT=`echo "scale=8; $INPUT_AMOUNT - $FEE" | bc`
 	CHANGE_ADDR=""
     fi
+
+    # JSON can't handle ".1234"... it needs "0."
+    DEST_AMOUNT=`echo "$DEST_AMOUNT" | sed 's/^\./0./'`
 
     # Sanity check fee.
     if [ `echo "$FEE > $INPUT_AMOUNT" | bc` = 1 ]; then

@@ -163,9 +163,10 @@ and
 Use DVDs instead of the USB sticks, and a laptop which doesn't have a
 DVD burner so you know it can never write anything back.
 
-### Step 2: Putting bitcoind on the small USB key
+### Step 2: Putting bitcoind on the small USB key (10 minutes)
 
 Format the small USB key and put the helper script which matches this HOWTO:
+
 * [offline](https://raw.githubusercontent.com/rustyrussell/bitcoin-storage-guide/v0.1/offline)
 
 You also need bitcoind and friends on the USB key (unless your laptop
@@ -211,11 +212,11 @@ keys to leak out, even if the laptop were compromised somehow.
 It won't help if they laptop has been physically compromised with a
 secret transmitter, of course.  But we have to stop somewhere!
 
-### Step 3: Booting Ubuntu on Your Laptop (5 minutes)
+### Step 3: Booting Ubuntu on Your Laptop (10 minutes)
 
 1. Find the "airplane mode" icon on the keyboard.  Mine is on F2;
    pressing "Fn" and F2 while the laptop is on should stop it
-   transmitting anything.
+   transmitting anything.  If you don't have one, goto step 3.
 
 2. Turn the laptop on, and activate airplane mode.  Then turn it off
    again.  We're going to leave it in airplane mode from now on.
@@ -226,9 +227,15 @@ secret transmitter, of course.  But we have to stop somewhere!
    laptop (or there may be a message on the screen).
 
 4. You'll see the purple Ubuntu background with a weird icon at the
-   bottom as it boots up.  Then select "Try Ubuntu", which will give
-   you the "Ubuntu Desktop" with various icons down the left hand
-   side.
+   bottom as it boots up.  Eventually you'll see a Welcome box.  On
+   the top right, you'll see 7 icons: the third from the left (looking
+   like a pie segment) is the networking icon.  Click on that, then
+   click on "Enable Networking" near the bottom: it has a tick on it,
+   which will go away, and it should say "Disconnected - you are now
+   offline".
+
+5. Then select "Try Ubuntu", which will give you the "Ubuntu Desktop"
+   with various icons down the left hand side.
 
 5. Insert the small USB.
 
@@ -244,7 +251,7 @@ secret transmitter, of course.  But we have to stop somewhere!
 
    You should get the following result numbers and letters (ignore after the space).  If not, STOP, something is wrong.
 
-      `670587c7f677ae856f5ceae3b02d3716c366733dfedb05ba909f6f9593c40375  /media/ubuntu/USBKEY/offline`
+      `5f82ff886841b886344911cb713cadc9b16e8c294cb5212f19cb4a72ccaa4194  /media/ubuntu/USBKEY/offline`
 
 8. Hit F11 to make the terminal full screen.
 
@@ -281,8 +288,8 @@ Let's make sure we wrote down that private key correctly!
 
 2. Turn it back on, booting off the big USB key again.
 
-3. Select "Try Ubuntu", then open a terminal, press F11, and run
-   `bash /media/ubuntu/*/offline`.
+3. Turn off networking, select "Try Ubuntu", then open a terminal,
+   press F11, and run `bash /media/ubuntu/*/offline`.
 
 4. Select "restore", and enter your private key (L... or K...).  If
    you got it correct, it should show you the public address which
@@ -394,9 +401,9 @@ You'll need:
 
 Now you have those:
 
-1. Turn your laptop on, booting off the big USB key again.  Select
-   "Try Ubuntu", then open a terminal, press F11, and run `bash
-   /media/ubuntu/*/offline`.
+1. Turn your laptop on, booting off the big USB key again.  Turn off
+   networking, select "Try Ubuntu", then open a terminal, press F11,
+   and run `bash /media/ubuntu/*/offline`.
 
 2. Restore the private key which received the payment.
 
