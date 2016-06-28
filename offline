@@ -115,7 +115,7 @@ new_key()
 check_key()
 {
     prompt "Enter your private key (UPPER and lower case matters!): "
-    read -e PRIVKEY
+    read -e -i "$PRIVKEY" PRIVKEY
 
     # There's no good way to figure out the address, except diff before
     # and after.  Blech!
@@ -127,7 +127,7 @@ check_key()
 	if [ -z "$ADDR" ]; then
 	    echo "Re-import of existing key?  Please enter address:"
 	    cat /tmp/after
-	    read ADDR
+	    read -e ADDR
 	else
 	    echo "Public address: $ADDR"	    
 	fi
@@ -137,20 +137,19 @@ check_key()
 	clear
     else
 	echo 'Invalid private key (starts with L or K)'
-	unset PRIVKEY
     fi
 }
 
 spend_tx()
 {
-    prompt "Enter transaction ID (64 characters) or raw transaction: "
-    read -e -i "$TX" TX 
-
     # We assume input was a standard pay to pubkey hash, and fool bitcoind
     # into generating one for us.
     info -n "Generating pubkey for $ADDR..."
     SCRIPTPUBKEY=`bitcoin-cli createrawtransaction '[{"txid":"0000000000000000000000000000000000000000000000000000000000000000","vout":0}]' '{"'$ADDR'":0}' | cut -c113-162`
     info SUCCESS
+
+    prompt "Enter transaction ID (64 characters) or raw transaction: "
+    read -e -i "$TX" TX 
 
     if echo "$TX" | egrep -q '^[A-Fa-f0-9]{64}$'; then
 	TXID="$TX"
@@ -162,30 +161,32 @@ spend_tx()
 	if try "Decoding transaction" "bitcoin-cli decoderawtransaction $TX >/dev/null"; then
 	    # Crappy parsing FTL...
 	    SIMPLIFIED=`bitcoin-cli decoderawtransaction $TX | tr -d ' "'`
-	    TXID=`echo "$SIMPLIFIED" | awk -F'[,:]' '{if ($1 == "txid") { print "$2"; exit } }'`
+	    TXID=`echo "$SIMPLIFIED" | awk -F'[,:]' '{if ($1 == "txid") { print $2; exit } }'`
 	    VOUT=`echo "$SIMPLIFIED" | awk -F'[,:]' '{if ($1 == "n") { N=$2; } if ($1 == "'$ADDR'") print N; }'`
 	    case "$VOUT" in
 		'')
 		    echo Could not find any output in $TXID paying to $ADDR
-		    return
+		    return 0
 		    ;;
 		'* *')
 		    echo Found multiple outputs in $TXID paying to $ADDR: $VOUT
-		    return
+		    return 0
 		    ;;
 		*)
-		    INPUT_AMOUNT=`echo $SIMPLIFIED | awk -F'[,:]' '{if ($1 == "n") { N=$2; } if (N == '$VOUT' && $1 == "value") print $2; }'`
-		    INPUT_SCRIPTPUBKEY=`echo $SIMPLIFIED | awk -F'[,:]' '{if ($1 == "n") { N=$2; } if (N == '$VOUT' && $1 == "hex") print $2; }'`
+		    # "value" comes BEFORE "n", just to make it hard!
+		    INPUT_AMOUNT=`echo "$SIMPLIFIED" | awk -F'[,:]' '{if ($1 == "value") { V=$2; } if ($1 == "n" && $2 == '$VOUT') print V; }'`
+		    # Don't get fooled if VOUT=1, set N to -1 initially.
+		    INPUT_SCRIPTPUBKEY=`echo "$SIMPLIFIED" | awk -F'[,:]' 'BEGIN {N=-1} {if ($1 == "n") { N=$2; } if (N == '$VOUT' && $1 == "hex") print $2; }'`
 		    if [ "$INPUT_SCRIPTPUBKEY" != "$SCRIPTPUBKEY" ]; then
 			echo $TXID output $VOUT has unusual scriptpubkey "$INPUT_SCRIPTPUBKEY" not "$SCRIPTPUBKEY".  Please report!
-			return
+			return 0
 		    fi
 	    esac
 	    echo "Transaction ID:" $TXID
 	    echo "Output number:" $VOUT
 	    echo "Amount: " $INPUT_AMOUNT
 	else
-	    return
+	    return 0
 	fi
     fi
 
@@ -195,7 +196,7 @@ spend_tx()
     read -e -i "$DEST_ADDR" DEST_ADDR
 
     prompt "Amount to send (hit ENTER to send as much as possible): "
-    read -e -i "$DEST_AMOUNT" DEST_AMOUNT
+    read -e DEST_AMOUNT
 
     if [ -n "$DEST_AMOUNT" ]; then
 	prompt "Address for change: "
@@ -208,7 +209,7 @@ spend_tx()
 	# Sanity check for tiny or negative change (or weird fee).
 	if [ `echo "$CHANGE_AMOUNT < $FEE" | bc` = 1 ]; then
 	    echo "Change amount $CHANGE_AMOUNT too small (fee is $FEE)"
-	    return
+	    return 0
 	fi
 	# JSON can't handle ".1234"... it needs "0."
 	CHANGE_AMOUNT=`echo "$CHANGE_AMOUNT" | sed 's/^\./0./'`
@@ -225,7 +226,7 @@ spend_tx()
     # Sanity check fee.
     if [ `echo "$FEE > $INPUT_AMOUNT" | bc` = 1 ]; then
 	echo Fee $FEE is greater than input amount $INPUT_AMOUNT
-	return
+	return 0
     fi
 
     echo -n "Spending $INPUT_AMOUNT to send $DEST_AMOUNT to $DEST_ADDR"
@@ -242,13 +243,13 @@ spend_tx()
 	# Simply refuse to pay more than 5% fee ever.
 	if [ `echo "$FEE * 20 >= $DEST_AMOUNT" | bc -l` = 1 ]; then
 	    echo Refusing to let you do that.  Sorry.
-	    return
+	    return 0
 	fi
     fi
 
     # Create transaction.
     info -n "Creating raw transaction..."
-    if [ -n "$CHANGE_AMOUNT" ]; then
+    if [ -n "$CHANGE_ADDR" ]; then
 	# Random order of dest, change
 	if flip_coin; then
 	    OUTS='{"'$DEST_ADDR'":'$DEST_AMOUNT',"'$CHANGE_ADDR'":'$CHANGE_AMOUNT'}'
@@ -260,7 +261,12 @@ spend_tx()
     else
 	OUTS='{"'$DEST_ADDR'":'$DEST_AMOUNT'}'
     fi
-    RAW_TX=`bitcoin-cli createrawtransaction '[{"txid":"'$TXID'","vout":'$VOUT'}]' "$OUTS"`
+
+    if ! RAW_TX=`bitcoin-cli createrawtransaction '[{"txid":"'$TXID'","vout":'$VOUT'}]' "$OUTS"`; then
+	echo FAILED.
+	echo "Malformed transaction or addresses?  Try again."
+	return 0
+    fi
     info SUCCESS
 
     info -n "Signing raw transaction..."
@@ -268,7 +274,7 @@ spend_tx()
     info SUCCESS
 
     echo "Payment to broadcast: $SIGNED_TX"
-    qrencode -i -t UTF8 "$SIGNED_TX"
+    qrencode -i -t UTF8 `echo "$SIGNED_TX" | tr -d ' "' | awk -F'[,:]' '{if ($1 == "hex") { print $2; exit } }'`
 }
 
 # People will try very hard to lose money, let's try not to help them.
@@ -295,7 +301,7 @@ while true; do
     info "----------------------------------------------------"
     info "create - Create a new private key and public address."
     info "restore - Restore a private key and check it is valid."
-    [ -z "$PRIVKEY" ] || info "spend - spend a transaction with a private key."
+    [ -z "$ADDR" ] || info "spend - spend a transaction with a private key."
     info "(To quit, just power off the entire machine)"
     prompt "What do you want to do? "
     read CHOICE
@@ -307,8 +313,8 @@ while true; do
 	    check_key
 	    ;;
 	spend)
-	    if [ -z "$PRIVKEY" ]; then
-		info "Use 'check' to enter the private key first"
+	    if [ -z "$ADDR" ]; then
+		info "Use 'restore' to enter the private key first"
 	    else
 		spend_tx
 	    fi
