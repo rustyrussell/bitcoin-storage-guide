@@ -16,8 +16,9 @@ This guide is digitally signed by me: you can download it from
 where you should see a green "Verified" next to the latest version.
 
 For the technically inclined you can also find my GPG fingerprint
-here:
+here, and my signature on this document in README.md.gpg
 
+* [Keybase](https://keybase.io/rusty)
 * [Twitter](https://mobile.twitter.com/rusty_twit/status/644559490646278144)
 * [My blog](https://ozlabs.org/~rusty/rusty-gpg.asc)
 
