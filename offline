@@ -10,48 +10,28 @@ import sys
 import time
 
 DEBS_AMD64={
-    'bitcoind_0.12.1-xenial1_amd64.deb'
-    :'3991ff69a769a2caff345af97e7f2e23b15ab883a57c9105d019b18fbc27dd59',
-    'libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb'
-    :'756f961b8e30cda2e55f275dc34c5f519ce41e0f48e105d305b7f70bd22a8160',
-    'libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb'
-    :'445572e209e156429135f33274e0024bb63d8289acee21602655ef210a8563e8',
-    'libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb'
-    :'b0b07b33690e8b65019298ad1fd847b5b6a536c69c717bd4fee5a0ad51587eed',
-    'libdb4.8++_4.8.30-xenial2_amd64.deb'
-    :'b2dc543aa1e950cedf17b2e2a64e66f48a1da58d0efee766dee03fff17150d24',
-    'libevent-core-2.0-5_2.0.21-stable-2_amd64.deb'
-    :'101c8c4a1d6e05ddea8c63220a3d06ea1e179b3ac331d6c47d61c28b1e004af7',
-    'libevent-pthreads-2.0-5_2.0.21-stable-2_amd64.deb'
-    :'706beab6ce8d36d8c9b3892e39632fc3906c0c9c1974c970e62fb4d0f57c6d39',
-    'libssl1.0.0_1.0.2g-1ubuntu4.1_amd64.deb'
-    :'0b693736fb3799c6d982ed57a8ee764334171bc57a73f7ead3c22c7d10e8872e',
-    'qrencode_3.4.4-1_amd64.deb'
-    :'ca0d5f659685c564eeff01b66d502152288f7e0b84e45934e2b603e4999d3d07',
-    'libqrencode3_3.4.4-1_amd64.deb'
-    :'7009fa11f64236628dfbb5d247b21b157777712ad938e50e2e01ebf9696a6acd'
+    'bitcoind_0.12.1-xenial1_amd64.deb':'3991ff69a769a2caff345af97e7f2e23b15ab883a57c9105d019b18fbc27dd59',
+    'libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb':'756f961b8e30cda2e55f275dc34c5f519ce41e0f48e105d305b7f70bd22a8160',
+    'libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb':'445572e209e156429135f33274e0024bb63d8289acee21602655ef210a8563e8',
+    'libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb':'b0b07b33690e8b65019298ad1fd847b5b6a536c69c717bd4fee5a0ad51587eed',
+    'libdb4.8++_4.8.30-xenial2_amd64.deb':'b2dc543aa1e950cedf17b2e2a64e66f48a1da58d0efee766dee03fff17150d24',
+    'libevent-core-2.0-5_2.0.21-stable-2_amd64.deb':'101c8c4a1d6e05ddea8c63220a3d06ea1e179b3ac331d6c47d61c28b1e004af7',
+    'libevent-pthreads-2.0-5_2.0.21-stable-2_amd64.deb':'706beab6ce8d36d8c9b3892e39632fc3906c0c9c1974c970e62fb4d0f57c6d39',
+    'libssl1.0.0_1.0.2g-1ubuntu4.1_amd64.deb':'0b693736fb3799c6d982ed57a8ee764334171bc57a73f7ead3c22c7d10e8872e',
+    'qrencode_3.4.4-1_amd64.deb':'ca0d5f659685c564eeff01b66d502152288f7e0b84e45934e2b603e4999d3d07',
+    'libqrencode3_3.4.4-1_amd64.deb':'7009fa11f64236628dfbb5d247b21b157777712ad938e50e2e01ebf9696a6acd'
 }
 DEBS_X86={
-    'bitcoind_0.12.1-xenial1_i386.deb'
-    :'2db08cb35d81e7d78fe53a561dfbbf3d24b6da328e3de8ef7d8d346d9b4f4158',
-    'libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb'
-    :'226f7371f3c9817a94adca2a41a962fc369889790f3c272173be51586c4ec803',
-    'libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb'
-    :'11a304f7a2b3b862835a45245fffd3262624475c9b82dbd9f4b6912ed22e89ba',
-    'libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb'
-    :'9dbf083301c7b47d86d6bfef933469e59bf99dc58d40065007f8a8fecbc8f813',
-    'libdb4.8++_4.8.30-xenial2_i386.deb'
-    :'5e504e81a5e6877cd9c030840fd80181aada112ff31bd5a5035d993331ba7d7b',
-    'libevent-core-2.0-5_2.0.21-stable-2_i386.deb'
-    :'2aaa15157a1cd66ef8df6a7c15e786ab39973502b3e280b115722162c2146fd1',
-    'libevent-pthreads-2.0-5_2.0.21-stable-2_i386.deb'
-    :'987479fa2419990fc53e116f50304b6a473f9cce186c9d231bc7599bb1c1b326',
-    'libqrencode3_3.4.4-1_i386.deb'
-    :'89ff4ca9bdb258b99ce3ef20675005473ea6e36d5c67914167301d85e54e4010',
-    'libssl1.0.0_1.0.2g-1ubuntu4.1_i386.deb'
-    :'fab6ce738a4c80a876dcce43d2f270ec601eebab054959fa0abbc6f5a69be43b',
-    'qrencode_3.4.4-1_i386.deb'
-    :'80b702112fbba82215c36cf8a2bde70c52c6d86fad294e9df268814f3c84a992'
+    'bitcoind_0.12.1-xenial1_i386.deb':'2db08cb35d81e7d78fe53a561dfbbf3d24b6da328e3de8ef7d8d346d9b4f4158',
+    'libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb':'226f7371f3c9817a94adca2a41a962fc369889790f3c272173be51586c4ec803',
+    'libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb':'11a304f7a2b3b862835a45245fffd3262624475c9b82dbd9f4b6912ed22e89ba',
+    'libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb':'9dbf083301c7b47d86d6bfef933469e59bf99dc58d40065007f8a8fecbc8f813',
+    'libdb4.8++_4.8.30-xenial2_i386.deb':'5e504e81a5e6877cd9c030840fd80181aada112ff31bd5a5035d993331ba7d7b',
+    'libevent-core-2.0-5_2.0.21-stable-2_i386.deb':'2aaa15157a1cd66ef8df6a7c15e786ab39973502b3e280b115722162c2146fd1',
+    'libevent-pthreads-2.0-5_2.0.21-stable-2_i386.deb':'987479fa2419990fc53e116f50304b6a473f9cce186c9d231bc7599bb1c1b326',
+    'libqrencode3_3.4.4-1_i386.deb':'89ff4ca9bdb258b99ce3ef20675005473ea6e36d5c67914167301d85e54e4010',
+    'libssl1.0.0_1.0.2g-1ubuntu4.1_i386.deb':'fab6ce738a4c80a876dcce43d2f270ec601eebab054959fa0abbc6f5a69be43b',
+    'qrencode_3.4.4-1_i386.deb':'80b702112fbba82215c36cf8a2bde70c52c6d86fad294e9df268814f3c84a992'
 }
 
 def prefill_readline_buffer():

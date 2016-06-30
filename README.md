@@ -146,9 +146,12 @@ match the example below:
 * **Windows**: sha256sum.exe ubuntu-16.04-desktop-amd64.iso
 * **Linux**: sha256sum /tmp/ubuntu-16.04-desktop-amd64.iso
 
-	4bcec83ef856c50c6866f3b0f3942e011104b5ecc6d955d1e7061faff86070d4
+This should give a number
+`4bcec83ef856c50c6866f3b0f3942e011104b5ecc6d955d1e7061faff86070d4` <!--- sha256sum ubuntu-16.04-desktop-amd64.iso --->
 
-(For 32-bit Ubuntu, the number is `b20b956b5f65dff3650b3ef4e758a78a2a87152101a04ea1804f993d8e551ceb` instead).
+(For 32-bit Ubuntu, the number is
+`b20b956b5f65dff3650b3ef4e758a78a2a87152101a04ea1804f993d8e551ceb` <!--- sha256sum ubuntu-16.04-desktop-i386.iso --->
+instead).
 
 If the number you get is different, STOP.  Something is badly wrong.
 
@@ -252,7 +255,8 @@ secret transmitter, of course.  But we have to stop somewhere!
 
    You should get the following result numbers and letters (ignore after the space).  If not, STOP, something is wrong.
 
-      `73502a761801c8d77cbe0a3dd4950959a4c87f0fa73d0049522dce182af9a4b4  /media/ubuntu/USBKEY/offline`
+	  `384be2d376aa2c154fe63ab4848ce2339e0d988013265afd4e70bc9b5bc0645a  /media/ubuntu/USBKEY/offline` <!--- sha256sum offline --->
+
 
 8. Hit F11 to make the terminal full screen.
 
