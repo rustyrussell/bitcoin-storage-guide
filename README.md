@@ -158,7 +158,7 @@ laptop; here are instructions for
 and
 [Linux](http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu).
 
-#### Extra Paranoia
+#### Extra Paranoia (Optional)
 
 Use DVDs instead of the USB sticks, and a laptop which doesn't have a
 DVD burner so you know it can never write anything back.
@@ -251,11 +251,11 @@ secret transmitter, of course.  But we have to stop somewhere!
 
    You should get the following result numbers and letters (ignore after the space).  If not, STOP, something is wrong.
 
-      `5f82ff886841b886344911cb713cadc9b16e8c294cb5212f19cb4a72ccaa4194  /media/ubuntu/USBKEY/offline`
+      `73502a761801c8d77cbe0a3dd4950959a4c87f0fa73d0049522dce182af9a4b4  /media/ubuntu/USBKEY/offline`
 
 8. Hit F11 to make the terminal full screen.
 
-9. Run the script by typing: `bash /media/ubuntu/*/offline`
+9. Run the script by typing: `python3 /media/ubuntu/*/offline`
 
 #### Extra Paranoia (Optional)
 
@@ -280,11 +280,14 @@ real Ubuntu.
 4.  You will get an address like "1DzQg9vuzBGUnAB5Z6vgZX8qabbM1ftxDf".
     Anyone can send bitcoin to this, and only the private key can
     spend it.  You will also get a private key like
-    "L2b68o8EwXQQfWTu7K77Y7Pz9hLqzfb5vjVviJ8NadLXMWHdGYAv".
+    "L2b68o8EwXQQfWTu7K77Y7Pz9hLqzfb5vjVviJ8NadLXMWHdGYAv". This is a
+    standard key you could import into other wallets later if you
+    wanted to.
 
 5.  Write down the public address(es) (1...) on one piece of paper,
     and write down the private key(s) (L... or K...) on three pieces
-    of paper.
+    of paper.  It shows you where to split the key into two or three
+	parts, too.
 
 6.  To generate more addresses and keys, you can do this as many times
     as you like.
@@ -299,7 +302,7 @@ Let's make sure we wrote down that private key correctly!
 2. Turn it back on, booting off the big USB key again.
 
 3. Turn off networking, select "Try Ubuntu", put in the small USB key,
-   open a terminal, press F11, and run `bash /media/ubuntu/*/offline`.
+   open a terminal, press F11, and run `python3 /media/ubuntu/*/offline`.
 
 4. Select "restore", and enter your private key (L... or K...).  If
    you got it correct, it should show you the public address which
@@ -330,17 +333,8 @@ letters-and-numbers long, and the first 1 and last 5 or 6 digits are
 redundant, so if someone got most of the other 45 they could figure
 out the rest.
 
-To split it between two people, cut the paper in half after 24
-characters, eg "L2b68o8EwXQQfWTu7K77Y7Pz" and
-"9hLqzfb5vjVviJ8NadLXMWHdGYAv".  Either half by itself is useless.
-
-To split between 3 people, cut around at 16 and 31,
-ie. "L2b68o8EwXQQfWTu" "7K77Y7Pz9hLqzfb" and "5vjVviJ8NadLXMWHdGYAv".
-Figuring out the private key from only 2 of these parts would cost
-billions of dollars.
-
 A simple scheme would be splitting the three copies of the private key
-into two pieces at the same point; keep the first parts at home, work,
+into two pieces as shown by `offline`; keep the first parts at home, work,
 and your parent's house.  The second parts at your friend's house, in
 your handbag, and in a sealed envelope with instructions wherever your
 will is stored (eg. with your lawyer).
@@ -355,7 +349,7 @@ public address: the first output is number 0, the second is number 1,
 etc (it will usually send some change to another address as well,
 hence two outputs).
 
-### Extra Paranoia
+### Extra Paranoia (Optional)
 
 Use multiple addresses, and send randomized amounts at different times
 on different days.  Divide it up roughly using random-looking numbers,
@@ -413,7 +407,7 @@ Now you have those:
 
 1. Turn your laptop on, booting off the big USB key again.  Turn
    off networking, select "Try Ubuntu", put in the small USB key, open
-   a terminal, press F11, and run `bash /media/ubuntu/*/offline`.
+   a terminal, press F11, and run `python3 /media/ubuntu/*/offline`.
 
 2. Restore the private key which received the payment.
 
@@ -447,18 +441,19 @@ Now you have those:
 9. It will complain if the change amount is tiny, or the fee amount
 seems huge.
 
-10. It will then describe the transaction; check this is correct and
-    hit Enter.
+10. It will then describe the transaction; check this is correct.  If
+    you elected to receive change, write down the transaction id,
+    output and amount for spending in future.
 
-11. It will then show you the completed, raw transaction as numbers,
-    and as a QR code.  Google for "bitcoin send raw transaction" and
+11. Press Enter and it will then show you the completed, raw transaction
+    as a QR code.  Google for "bitcoin send raw transaction" and
     you'll see various web sites where you can paste it in to send it
     to the bitcoin network.
 
-12. If you don't send the transaction, you can simply try again to
-    create a new one.
+12. If you don't want the transaction, don't send it: you can simply
+    try again to create a new one.
 
-### Extra Paranoia
+### Extra Paranoia (Optional)
 
 Run your own bitcoin full node somewhere (online).  Use `bitcoin-cli
 importaddress 1DzQg9vuzBGUnAB5Z6vgZX8qabbM1ftxDf` (except with your
