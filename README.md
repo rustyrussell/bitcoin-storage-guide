@@ -145,9 +145,9 @@ match the example below:
 * **Windows**: sha256sum.exe ubuntu-16.04-desktop-amd64.iso
 * **Linux**: sha256sum /tmp/ubuntu-16.04-desktop-amd64.iso
 
-4bcec83ef856c50c6866f3b0f3942e011104b5ecc6d955d1e7061faff86070d4
+	4bcec83ef856c50c6866f3b0f3942e011104b5ecc6d955d1e7061faff86070d4
 
-(For 32-bit Ubuntu, the number is b20b956b5f65dff3650b3ef4e758a78a2a87152101a04ea1804f993d8e551ceb instead).
+(For 32-bit Ubuntu, the number is `b20b956b5f65dff3650b3ef4e758a78a2a87152101a04ea1804f993d8e551ceb` instead).
 
 If the number you get is different, STOP.  Something is badly wrong.
 
@@ -205,7 +205,7 @@ it harder for other files to sneak on.
 
 #### Extra Paranoia (Optional)
 
-Physically remove the wireless abd bluetooth cards in your laptop, as
+Physically remove the wireless and bluetooth cards in your laptop, as
 well as the speaker.  This makes it almost impossible for your private
 keys to leak out, even if the laptop were compromised somehow.
 
@@ -257,6 +257,16 @@ secret transmitter, of course.  But we have to stop somewhere!
 
 9. Run the script by typing: `bash /media/ubuntu/*/offline`
 
+#### Extra Paranoia (Optional)
+
+Re-check the Ubuntu image you're running, by typing the command: 
+
+	dd status=none if=/dev/cdrom count=2902112 | sha256sum
+
+(For 32-bit, use `count=2937600` instead).  The output should be the
+same string of numbers and letters from when you checked you had the
+real Ubuntu.
+
 ### Step 4: Generating Some Private Keys (5 minutes)
 
 1.  The script installs and runs bitcoind every time; it will complain
@@ -288,8 +298,8 @@ Let's make sure we wrote down that private key correctly!
 
 2. Turn it back on, booting off the big USB key again.
 
-3. Turn off networking, select "Try Ubuntu", then open a terminal,
-   press F11, and run `bash /media/ubuntu/*/offline`.
+3. Turn off networking, select "Try Ubuntu", put in the small USB key,
+   open a terminal, press F11, and run `bash /media/ubuntu/*/offline`.
 
 4. Select "restore", and enter your private key (L... or K...).  If
    you got it correct, it should show you the public address which
@@ -401,9 +411,9 @@ You'll need:
 
 Now you have those:
 
-1. Turn your laptop on, booting off the big USB key again.  Turn off
-   networking, select "Try Ubuntu", then open a terminal, press F11,
-   and run `bash /media/ubuntu/*/offline`.
+1. Turn your laptop on, booting off the big USB key again.  Turn
+   off networking, select "Try Ubuntu", put in the small USB key, open
+   a terminal, press F11, and run `bash /media/ubuntu/*/offline`.
 
 2. Restore the private key which received the payment.
 
