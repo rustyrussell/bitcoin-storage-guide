@@ -43,7 +43,7 @@ This makes me nervous, and it should make you nervous too.
 
 Letting someone else hold my coins isn't viable either: the history of
 bitcoin is one of scams and hacks, and it will take decades before we
-have any idea what bitcoin services are reliable, and what will
+have any idea which bitcoin services are reliable, and which will
 collapse and take the funds with them.
 
 There are four main concerns for those holding bitcoin:
@@ -52,7 +52,7 @@ There are four main concerns for those holding bitcoin:
     This is a real possibility, but I can't help you with this one.
 2.  **Loss**: I will lose my private key and nobody will be able to spend the coins.
 3.  **Theft**: Someone will steal my private key and take my coins.
-4.  **Convenience**: It will be really hard for me to spend my coins when I want to.
+4.  **Inconvenience**: It will be really hard for me to spend my coins when I want to.
 
 Loss protection, theft protection and convenience are all competing
 goals, so I'm going to provide a quick guide:
@@ -106,7 +106,7 @@ goals, so I'm going to provide a quick guide:
 
 # Setting Up An Offline Safe
 
-We're going to generate a few bitcoin addresses on a machine which has
+We're going to use bitcoin-core, the bitcoin reference software, to generate a few bitcoin addresses on a machine which has
 no way of contacting the outside world, we're going to write down the
 private keys on paper, we're going to double-check them, and we're
 going to protect those pieces of paper.
@@ -147,10 +147,12 @@ match the example below:
 * **Linux**: sha256sum /tmp/ubuntu-16.04-desktop-amd64.iso
 
 This should give a number
-`4bcec83ef856c50c6866f3b0f3942e011104b5ecc6d955d1e7061faff86070d4` <!--- sha256sum ubuntu-16.04-desktop-amd64.iso --->
+<!--- sha256sum ubuntu-16.04-desktop-amd64.iso --->
+`4bcec83ef856c50c6866f3b0f3942e011104b5ecc6d955d1e7061faff86070d4`
 
 (For 32-bit Ubuntu, the number is
-`b20b956b5f65dff3650b3ef4e758a78a2a87152101a04ea1804f993d8e551ceb` <!--- sha256sum ubuntu-16.04-desktop-i386.iso --->
+<!--- sha256sum ubuntu-16.04-desktop-i386.iso --->
+`b20b956b5f65dff3650b3ef4e758a78a2a87152101a04ea1804f993d8e551ceb`
 instead).
 
 If the number you get is different, STOP.  Something is badly wrong.
@@ -254,8 +256,8 @@ secret transmitter, of course.  But we have to stop somewhere!
 	  `sha256sum /media/ubuntu/*/offline`
 
    You should get the following result numbers and letters (ignore after the space).  If not, STOP, something is wrong.
-
-	  `384be2d376aa2c154fe63ab4848ce2339e0d988013265afd4e70bc9b5bc0645a  /media/ubuntu/USBKEY/offline` <!--- sha256sum offline --->
+<!--- sha256sum offline --->
+	  `384be2d376aa2c154fe63ab4848ce2339e0d988013265afd4e70bc9b5bc0645a  /media/ubuntu/USBKEY/offline`
 
 
 8. Hit F11 to make the terminal full screen.
