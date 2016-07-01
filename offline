@@ -45,6 +45,22 @@ def prefilled_input(prompt, text):
     readline.set_pre_input_hook()
     return result
 
+def check_ubuntu():
+    if platform.machine() == 'x86_64':
+        size=1485881344
+        cdrom='4bcec83ef856c50c6866f3b0f3942e011104b5ecc6d955d1e7061faff86070d4'
+    elif platform.machine() == 'i686':
+        size=1504051200
+        cdrom='b20b956b5f65dff3650b3ef4e758a78a2a87152101a04ea1804f993d8e551ceb'
+    else:
+        sys.exit('Unknown platform {}'.format(platform.machine()))
+
+    output=subprocess.run('dd status=none if=/dev/cdrom count={} | sha256sum'.format(int(size / 512)),
+                          shell=True, check=True, universal_newlines=True,
+                          stdout=subprocess.PIPE).stdout
+    if output != cdrom + "  -\n":
+        sys.exit('Bad ubuntu image')
+
 def select_debs():
     if platform.machine() == 'x86_64':
         return DEBS_AMD64

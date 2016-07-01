@@ -257,22 +257,11 @@ secret transmitter, of course.  But we have to stop somewhere!
 
    You should get the following result numbers and letters (ignore after the space).  If not, STOP, something is wrong.
 <!--- sha256sum offline --->
-	  `384be2d376aa2c154fe63ab4848ce2339e0d988013265afd4e70bc9b5bc0645a  /media/ubuntu/USBKEY/offline`
-
+	  `fb954fae8134331c228040fd73d291aa06b8be045bfee45bb41e5ac6c6d67894  /media/ubuntu/USBKEY/offline`
 
 8. Hit F11 to make the terminal full screen.
 
 9. Run the script by typing: `python3 /media/ubuntu/*/offline`
-
-#### Extra Paranoia (Optional)
-
-Re-check the Ubuntu image you're running, by typing the command: 
-
-	dd status=none if=/dev/cdrom count=2902112 | sha256sum
-
-(For 32-bit, use `count=2937600` instead).  The output should be the
-same string of numbers and letters from when you checked you had the
-real Ubuntu.
 
 ### Step 4: Generating Some Private Keys (5 minutes)
 
