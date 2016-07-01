@@ -5,7 +5,7 @@
 This is an opinionated guide to storing your bitcoin securely.  You
 should read this before buying bitcoin.
 
-I wrote this because existing guides are all aimed at experts[1],
+I wrote this because existing guides are all aimed at experts<sup>[1](#gmax-offline)</sup>,
 assume knowledge you might not have, or skip over important things
 like backups, or actually spending your bitcoin.
 
@@ -63,8 +63,8 @@ goals, so I'm going to provide a quick guide:
 	* Pros: really easy to use.
 
 2.  Small investment.  For less than $1000, my preference would be the
-    Greenbits wallet for Android[2] (you can also use Green Address's Chrome
-    app[3]).  Their initial setup UX is mediocre, but they provide two
+    Greenbits wallet for Android<sup>[2](#greenbits-android)</sup> (you can also use Green Address's Chrome
+    app<sup>[3](#greenaddress)</sup>).  Their initial setup UX is mediocre, but they provide two
     factor for spending above your chosen limit, ability to save your
     wallet phrase in case you lose your phone, a failsafe if they
     ever vanish, and they don't have access to your coins.
@@ -79,7 +79,7 @@ goals, so I'm going to provide a quick guide:
 
 3.  Larger investment.  For less than $10000, you could use a
     hardware wallet with a screen.  The only current option here is
-    the Trezor[4]; it's probably possible to extract the secret key from
+    the Trezor<sup>[4](#trezor)</sup>; it's probably possible to extract the secret key from
     the device, but it'd be fairly hard (thus, not worthwhile) and
 	they'd almost certainly need physical access.
 
@@ -372,7 +372,7 @@ transaction, which you can send out onto the bitcoin network for
 miners to include in blocks.
 
 Your offline bitcoind obviously doesn't know what transactions exist.
-Still, it can be made to sign transactions you give it[1].  There's a
+Still, it can be made to sign transactions you give it<sup>[1](#gmax-offline)</sup>.  There's a
 quick-but-mistakes-possible way, and a slow-but-surer way.  How much is
 your time worth?
 
@@ -485,10 +485,10 @@ Rusty.
 
 # References and Other Resources
 
-[1] [Greg Maxwell's offline signing example with bitcoin 0.7](https://people.xiph.org/~greg/signdemo.txt)
+<a name="gmax-offline">[1]</a> [Greg Maxwell's offline signing example with bitcoin 0.7](https://people.xiph.org/~greg/signdemo.txt)
 
-[2] [Greenbits Wallet for Android](https://play.google.com/store/apps/details?id=com.greenaddress.greenbits_android_wallet&hl=en) (NOT the older GreenAddress wallet, which has usability issues)
+<a name="greenbits-android">[2]</a> [Greenbits Wallet for Android](https://play.google.com/store/apps/details?id=com.greenaddress.greenbits_android_wallet&hl=en) (NOT the older GreenAddress wallet, which has usability issues)
 
-[3] [Green Adderss](https://greenaddress.it/)
+<a name="greenaddress">[3]</a> [Green Address](https://greenaddress.it/)
 
-[4] [The Trezor Hardware Wallet](https://bitcointrezor.com/)
+<a name="trezor">[4]</a> [The Trezor Hardware Wallet](https://bitcointrezor.com/)
