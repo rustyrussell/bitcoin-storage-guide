@@ -257,7 +257,7 @@ secret transmitter, of course.  But we have to stop somewhere!
 
    You should get the following result numbers and letters (ignore after the space).  If not, STOP, something is wrong.
 <!--- sha256sum offline --->
-	  `fb954fae8134331c228040fd73d291aa06b8be045bfee45bb41e5ac6c6d67894  /media/ubuntu/USBKEY/offline`
+	  `ca1d8f4941978f1ff11be7ec770e227a71f94c2fc8927dfef2acc74544e60a8e  /media/ubuntu/USBKEY/offline`
 
 8. Hit F11 to make the terminal full screen.
 

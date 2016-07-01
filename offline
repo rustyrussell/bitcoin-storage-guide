@@ -86,8 +86,7 @@ def install_debs(debs):
         subprocess.run(['dpkg', '-i', d], check=True, stdout=subprocess.DEVNULL)
 
 def stop_bitcoin():
-#FIXME
-#    subprocess.run(['bitcoin-cli', 'stop'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(['bitcoin-cli', 'stop'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print("stopping bitcoind")
     
 def start_bitcoin():
@@ -348,16 +347,14 @@ fee_rate=None
 dest_addr=None
 change_addr=None
 
-#FIXME
-#goto_debdir()
-#sums=select_debs()
-#check_debs(sums)
-#install_debs(keys(sums))
+goto_debdir()
+sums=select_debs()
+check_debs(sums)
+install_debs(keys(sums))
 
-#start_bitcoin()
+start_bitcoin()
 
-#try:
-if True:
+try:
     while True:
         print("Rusty's Remarkable Unreliable Bitcoin Storage Script")
         print('----------------------------------------------------');
@@ -378,6 +375,6 @@ if True:
                 spend_tx()
         else:
             print("I don't understand '{}'".format(choice))
-#finally:
-#    stop_bitcoin()
-#    sys.exit(1)
+finally:
+    stop_bitcoin()
+    sys.exit(1)
