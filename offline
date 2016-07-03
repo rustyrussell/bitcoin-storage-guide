@@ -169,7 +169,8 @@ def check_key():
 
         diff=after_addresses - before_addresses
         if len(diff) == 1:
-            addr=diff[0]
+            addr=diff.pop()
+            print('Public address is {}'.format(addr))
         elif len(diff) == 0:
             print('Re-import of existing key?  One of:')
             for k in after_addresses:
