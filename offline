@@ -72,18 +72,20 @@ def goto_debdir():
     dirs=os.listdir('/media/ubuntu')
     if len(dirs) != 1:
         sys.exit('More than one USB inserted?')
-    os.chdir(dirs[0])
+    os.chdir('/media/ubuntu/' + dirs[0])
 
 def check_debs(sums):
     for d in sums.keys():
         output=subprocess.run(['sha256sum', d],
-                              check=True, stdout=subprocess.PIPE).stdout
-        if output != b'{}  {}\n'.format(sums[d], d):
+                              universal_newlines=True, check=True,
+                              stdout=subprocess.PIPE).stdout
+        if output != '{}  {}\n'.format(sums[d], d):
             sys.exit('Bad package {}'.format(d))
 
 def install_debs(debs):
-    for d in debs:
-        subprocess.run(['dpkg', '-i', d], check=True, stdout=subprocess.DEVNULL)
+    cmd=['sudo', 'dpkg', '-i']
+    cmd.extend(debs)
+    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
 
 def stop_bitcoin():
     subprocess.run(['bitcoin-cli', 'stop'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
