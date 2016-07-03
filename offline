@@ -131,7 +131,7 @@ def json_from_bitcoin_cli(*args):
     return json.loads(bitcoin_cli_nofail(*args))
 
 def new_key():
-    print('Generating address', end='...')
+    print('Generating address', end='...', flush=True)
     time.sleep(1)
     tmpaddr=bitcoin_cli_simple('getnewaddress')
     tmpprivkey=bitcoin_cli_simple('dumpprivkey', tmpaddr)
@@ -196,7 +196,7 @@ def spend_tx():
 
     # We assume input was a standard pay to pubkey hash, and fool bitcoind
     # into generating one for us.
-    print('Generating public keyscript for {}'.format(addr), end='...')
+    print('Generating public keyscript for {}'.format(addr), end='...', flush=True)
     scriptpubkey = bitcoin_cli_simple('createrawtransaction',
                                       '[{"txid":"' + '0' * 32 + '","vout":0}]',
                                       '{{"{}":0}}'.format(addr))[112:162]
@@ -213,7 +213,7 @@ def spend_tx():
             return
 
         txid=tx
-        vout=int(prefilled_input('Enter output number which paid to $ADDR (first is 0, second is 1, etc): ', vout))
+        vout=int(prefilled_input('Enter output number which paid to {} (first is 0, second is 1, etc): '.format(addr), vout))
         input_amount=float(prefilled_input('Enter amount it paid (in bitcoins): ', input_amount))
     else:
         decode=bitcoin_cli('decoderawtransaction', tx)
@@ -275,7 +275,8 @@ def spend_tx():
     else:
         changestr=' (change to {})'.format(change_addr)
 
-    print('Spending {:.8f} to send {:.8f} to {}'.format(satoshi_to_bitcoin(input_amount_satoshis), satoshi_to_bitcoin(dest_amount_satoshis), dest_addr, changestr))
+    print('')
+    print('Spending {:.8f} to send {:.8f} to {}{}'.format(satoshi_to_bitcoin(input_amount_satoshis), satoshi_to_bitcoin(dest_amount_satoshis), dest_addr, changestr))
 
     print('Paying miners a fee of {:.8f} bitcoins ({:5f}%)'.format(satoshi_to_bitcoin(fee_satoshis), fee_satoshis * 100 / dest_amount_satoshis))
 
@@ -289,7 +290,7 @@ def spend_tx():
             return
 
     # Create transaction.
-    print('Creating raw transaction', end='...')
+    print('Creating raw transaction', end='...', flush=True)
     if change_addr is not None:
         # Random order of dest, change
         if os.urandom(1)[0] >= 128:
@@ -311,7 +312,7 @@ def spend_tx():
 
     print('SUCCESS')
 
-    print('Signing raw transaction', end='...')
+    print('Signing raw transaction', end='...', flush=True)
     signed_tx=json_from_bitcoin_cli('signrawtransaction', raw_tx.stdout.rstrip(),
                                     '[{{"txid":"{}","vout":{},"scriptPubKey":"{}"}}]'.format(txid, vout, scriptpubkey))
     print('SUCCESS')
@@ -350,17 +351,24 @@ fee_rate=None
 dest_addr=None
 change_addr=None
 
+print("Rusty's Remarkable Unreliable Bitcoin Storage Script")
+print('----------------------------------------------------');
 goto_debdir()
+print('Checking bitcoin and friends', end='...', flush=True)
 sums=select_debs()
 check_debs(sums)
-install_debs(keys(sums))
+print('OK')
+print('Installing bitcoin and friends', end='...', flush=True)
+install_debs(sums.keys())
+print('OK')
 
+print('Starting bitcoin', end='...', flush=True)
 start_bitcoin()
+print('OK')
 
 try:
     while True:
-        print("Rusty's Remarkable Unreliable Bitcoin Storage Script")
-        print('----------------------------------------------------');
+        print('')
         print('create - Create a new private key and public address.')
         print('restore - Restore a private key and check it is valid.')
         if addr is not None:
