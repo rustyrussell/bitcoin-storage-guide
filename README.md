@@ -173,7 +173,7 @@ DVD burner so you know it can never write anything back.
 
 Format the small USB key and put the helper script which matches this HOWTO:
 
-* [offline](https://raw.githubusercontent.com/rustyrussell/bitcoin-storage-guide/v0.1/offline)
+* [offline](https://raw.githubusercontent.com/rustyrussell/bitcoin-storage-guide/v0.2/offline)
 
 You also need bitcoin and friends on the USB key (unless your laptop
 is ancient like mine, see below):
