@@ -34,13 +34,13 @@ DEBS_X86={
     'qrencode_3.4.4-1_i386.deb':'80b702112fbba82215c36cf8a2bde70c52c6d86fad294e9df268814f3c84a992'
 }
 
-def prefill_readline_buffer():
-    if text is not None:
-        readline.insert_text(text)
-        readline.redisplay()
-
 def prefilled_input(prompt, text):
-    readline.set_pre_input_hook(prefill_readline_buffer)
+    def prefill_hook():
+        if text is not None:
+            readline.insert_text(text)
+            readline.redisplay()
+
+    readline.set_pre_input_hook(prefill_hook)
     result = input(prompt)
     readline.set_pre_input_hook()
     return result
@@ -163,7 +163,7 @@ def check_key():
     # There's no good way to figure out the address, except diff before
     # and after.  Blech!
     before_addresses=set(json_from_bitcoin_cli('getaddressesbyaccount', ''))
-    if bitcoin_cli('importprivkey', privkey).returncode == 0:
+    if bitcoin_cli('importprivkey', privkey.replace(" ", "")).returncode == 0:
         print('Key is VALID!')
         after_addresses=set(json_from_bitcoin_cli('getaddressesbyaccount', ''))
 
