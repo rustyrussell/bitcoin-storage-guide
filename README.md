@@ -169,13 +169,13 @@ and
 Use DVDs instead of the USB sticks, and a laptop which doesn't have a
 DVD burner so you know it can never write anything back.
 
-### Step 2: Putting bitcoind on the small USB key (10 minutes)
+### Step 2: Putting bitcoin on the small USB key (10 minutes)
 
 Format the small USB key and put the helper script which matches this HOWTO:
 
 * [offline](https://raw.githubusercontent.com/rustyrussell/bitcoin-storage-guide/v0.1/offline)
 
-You also need bitcoind and friends on the USB key (unless your laptop
+You also need bitcoin and friends on the USB key (unless your laptop
 is ancient like mine, see below):
 
 *  [bitcoind](https://launchpad.net/~bitcoin/+archive/ubuntu/bitcoin/+files/bitcoind_0.12.1-xenial1_amd64.deb)
@@ -265,7 +265,7 @@ secret transmitter, of course.  But we have to stop somewhere!
 
 ### Step 4: Generating Some Private Keys (5 minutes)
 
-1.  The script installs and runs bitcoind every time; it will complain
+1.  The script installs and runs the bitcoin program every time; it will complain
     if something goes wrong, and you should too.
 
 2.  Make sure nobody can see your laptop screen.  No windows, no
@@ -360,10 +360,12 @@ We will get your offline safe to create and sign a raw bitcoin
 transaction, which you can send out onto the bitcoin network for
 miners to include in blocks.
 
-Your offline bitcoind obviously doesn't know what transactions exist.
-Still, it can be made to sign transactions you give it<sup>[1](#gmax-offline)</sup>.  There's a
-quick-but-mistakes-possible way, and a slow-but-surer way.  How much is
-your time worth?
+Bitcoin is essentially a ledger of payments: an incoming transaction
+pays into your address, and you spend that by creating a transaction
+which sends coins to a new address.  Your offline bitcoin progream obviously
+doesn't know what transactions exist, so you need to tell it what
+transaction paid you manually; it can be made to create a new
+transaction and sign it<sup>[1](#gmax-offline)</sup>.  There's a quick way, and a slow way.
 
 You'll need:
 
@@ -381,7 +383,7 @@ You'll need:
    and you'll have to type it all in without making mistakes.
    If you didn't record this when you sent it, a block explorer should
    be able to find it if you give it your public address.  The first
-   output is number "0", the second "1", etc.
+   output is numbered "0", the second "1", etc.
 
 3. The address you want to send the funds to.  For large amounts, you
    should get this address in two different ways, to make sure someone
@@ -412,9 +414,9 @@ Now you have those:
 
 4. Slow way: the program will now look through the transaction for
    which output paid to you, and how much it was.  If you typed the
-   transaction wrong, it might fail to decode, or it may not find
-   your output.  Or it might fail to work when you try to broadcast
-   the final transaction.
+   transaction wrong, it probably will fail to work when you try to broadcast
+   the final transaction (it may simply fail to decode the transaction
+   immediately, if you're lucky).
 
 5. Quick way: you will tell it the output number and the amount that
    was sent.  If you get the output number or transaction ID wrong, it
