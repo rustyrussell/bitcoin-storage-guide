@@ -139,7 +139,7 @@ instead.
 You should check that you have the real Ubuntu, if you can.  On Linux
 and MacOS this is easy, on Windows you'll need
 [sha256sum.exe](http://www.labtestproject.com/files/win/sha256sum/sha256sum.exe).
-Open a terminal window and sum the file you downloaded, which should
+Use the following commands to sum the file you downloaded, which should
 match the example below:
 
 * **MacOS**: shasum -a 256 /tmp/ubuntu-16.04-desktop-amd64.iso
@@ -251,7 +251,7 @@ secret transmitter, of course.  But we have to stop somewhere!
    to type into that box where it says `ubuntu@ubuntu:~$ `.
 
 7. Let's make sure the script is the right one, and nobody has
-   modified it.  Type the following:
+   modified it.  Type the following then hit enter (it's a single line):
 
 	  `sha256sum /media/ubuntu/*/offline`
 
