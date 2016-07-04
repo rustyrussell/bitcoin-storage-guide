@@ -6,7 +6,7 @@ urlchecks: README.md
 	@for url in `sed -n 's,.*\(http[^)]*\).*,\1,p' $<`; do if wget -q --spider $$url; then echo $$url OK; else echo $$url fail; exit 1; fi; done
 
 sigchecks: README.md
-	gpg --verify README.md.gpg
+	gpg --verify README.md.sig README.md
 
 sumchecks: README-sumchecks offline-sumchecks
 
@@ -16,6 +16,6 @@ README-sumchecks: README.md
 offline-sumchecks: offline
 	@sed -n "s,^ *'\([^']*.deb\)':'\([^']*\)'.*,\1 \2,p" $< | while read FILE SUM; do if [ "`sha256sum $(DEB_DIR)/$$FILE`" != "$$SUM  $(DEB_DIR)/$$FILE" ]; then echo $$FILE wrong; exit 1; else echo $$FILE OK; fi; done
 
-README.md.gpg: README.md
-	gpg -s README.md
+README.md.sig: README.md
+	gpg -b README.md
 
