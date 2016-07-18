@@ -62,7 +62,10 @@ goals, so I'm going to provide a quick guide:
 	* Risks: they could get hacked, go bankrupt, or stop your account.
 	* Pros: really easy to use.
 
-2.  Small investment.  For less than $1000, my preference would be the
+2.  Small investment.  For less than $1000, my preference would be
+    any service which doesn't control your keys, say using 2 of 3
+    multi-sig, where you control 2 and they control 1.  I've only got
+	experience with the
     Greenbits wallet for Android<sup>[2](#greenbits-android)</sup> (you can also use Green Address's Chrome
     app<sup>[3](#greenaddress)</sup>).  Their initial setup UX is mediocre, but they provide two
     factor for spending above your chosen limit, ability to save your
