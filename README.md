@@ -269,7 +269,7 @@ secret transmitter, of course.  But we have to stop somewhere!
     if something goes wrong, and you should too.
 
 2.  Make sure nobody can see your laptop screen.  No windows, no
-    reflections.
+    reflections, and no mobile devices with cameras in the room.
 
 3.  Type "create" then press enter.
 
