@@ -176,7 +176,7 @@ DVD burner so you know it can never write anything back.
 
 Format the small USB key and put the helper script which matches this HOWTO:
 
-* [offline](https://raw.githubusercontent.com/rustyrussell/bitcoin-storage-guide/v0.2/offline)
+* [offline](https://raw.githubusercontent.com/rustyrussell/bitcoin-storage-guide/v0.2.1/offline)
 
 You also need bitcoin and friends on the USB key (unless your laptop
 is ancient like mine, see below):
@@ -260,7 +260,7 @@ secret transmitter, of course.  But we have to stop somewhere!
 
    You should get the following result numbers and letters (ignore after the space).  If not, STOP, something is wrong.
 <!--- sha256sum offline --->
-	  `4f3d519aa16ea7bfffc285eb2cd942981971ec2d28f17772106980e38cc551f6  /media/ubuntu/USBKEY/offline`
+	  `c7ab4f6d839f4a5f6e35ced226537698c05e5af3708b5cd33bdfced3f0347c8e  /media/ubuntu/USBKEY/offline`
 
 8. Hit F11 to make the terminal full screen.
 
@@ -486,3 +486,9 @@ Rusty.
 <a name="greenaddress">[3]</a> [Green Address](https://greenaddress.it/)
 
 <a name="trezor">[4]</a> [The Trezor Hardware Wallet](https://bitcointrezor.com/)
+
+# License
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This guide is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+
+The offline script is licensed under CC0 (public domain).

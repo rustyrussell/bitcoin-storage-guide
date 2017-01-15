@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 # Simple script to save typos and other frustrations for offline wallets.
+# Licenced under CC0 (Public domain), by Rusty Russell
 import argparse
 import json
 import os
