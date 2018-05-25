@@ -4,35 +4,29 @@
 import argparse
 import json
 import os
-import platform
 import readline
 import subprocess
 import sys
 import time
 
-DEBS_AMD64={
-    'bitcoind_0.12.1-xenial1_amd64.deb':'3991ff69a769a2caff345af97e7f2e23b15ab883a57c9105d019b18fbc27dd59',
-    'libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb':'756f961b8e30cda2e55f275dc34c5f519ce41e0f48e105d305b7f70bd22a8160',
-    'libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb':'445572e209e156429135f33274e0024bb63d8289acee21602655ef210a8563e8',
-    'libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb':'b0b07b33690e8b65019298ad1fd847b5b6a536c69c717bd4fee5a0ad51587eed',
-    'libdb4.8++_4.8.30-xenial2_amd64.deb':'b2dc543aa1e950cedf17b2e2a64e66f48a1da58d0efee766dee03fff17150d24',
-    'libevent-core-2.0-5_2.0.21-stable-2_amd64.deb':'101c8c4a1d6e05ddea8c63220a3d06ea1e179b3ac331d6c47d61c28b1e004af7',
-    'libevent-pthreads-2.0-5_2.0.21-stable-2_amd64.deb':'706beab6ce8d36d8c9b3892e39632fc3906c0c9c1974c970e62fb4d0f57c6d39',
-    'libssl1.0.0_1.0.2g-1ubuntu4.1_amd64.deb':'0b693736fb3799c6d982ed57a8ee764334171bc57a73f7ead3c22c7d10e8872e',
-    'qrencode_3.4.4-1_amd64.deb':'ca0d5f659685c564eeff01b66d502152288f7e0b84e45934e2b603e4999d3d07',
-    'libqrencode3_3.4.4-1_amd64.deb':'7009fa11f64236628dfbb5d247b21b157777712ad938e50e2e01ebf9696a6acd'
-}
-DEBS_X86={
-    'bitcoind_0.12.1-xenial1_i386.deb':'2db08cb35d81e7d78fe53a561dfbbf3d24b6da328e3de8ef7d8d346d9b4f4158',
-    'libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb':'226f7371f3c9817a94adca2a41a962fc369889790f3c272173be51586c4ec803',
-    'libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb':'11a304f7a2b3b862835a45245fffd3262624475c9b82dbd9f4b6912ed22e89ba',
-    'libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb':'9dbf083301c7b47d86d6bfef933469e59bf99dc58d40065007f8a8fecbc8f813',
-    'libdb4.8++_4.8.30-xenial2_i386.deb':'5e504e81a5e6877cd9c030840fd80181aada112ff31bd5a5035d993331ba7d7b',
-    'libevent-core-2.0-5_2.0.21-stable-2_i386.deb':'2aaa15157a1cd66ef8df6a7c15e786ab39973502b3e280b115722162c2146fd1',
-    'libevent-pthreads-2.0-5_2.0.21-stable-2_i386.deb':'987479fa2419990fc53e116f50304b6a473f9cce186c9d231bc7599bb1c1b326',
-    'libqrencode3_3.4.4-1_i386.deb':'89ff4ca9bdb258b99ce3ef20675005473ea6e36d5c67914167301d85e54e4010',
-    'libssl1.0.0_1.0.2g-1ubuntu4.1_i386.deb':'fab6ce738a4c80a876dcce43d2f270ec601eebab054959fa0abbc6f5a69be43b',
-    'qrencode_3.4.4-1_i386.deb':'80b702112fbba82215c36cf8a2bde70c52c6d86fad294e9df268814f3c84a992'
+DEBS={
+    'bitcoind_0.16.0-bionic1_amd64.deb': 'd9ac2eada58aeeae671ce4c2c355ab7e4717bb7a2844eeb143a23a8a433ddd48',
+    'libboost-chrono1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb': 'ecb75ff0dbc0956585a6cddd7fd8c863593948b47c0c9b27ec734f5560283956',
+    'libboost-filesystem1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb': '8756b023a86222524cf6ef7884da92fd21ad53207b38e705f568a745dcea4cef',
+    'libboost-program-options1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb': 'dc13c690524ad6258b7897b2dd6723a3b3df29d745657a6ccbe7440d57f1b453',
+    'libboost-system1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb': '390e93c275504a03101de7e35d898f224dff2594ff802dcc83a936b5fca690cc',
+    'libboost-thread1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb': '3748600e4dbadfb84df6873d23117a3728ad1f3b71505062037d4caa346696b3',
+    'libdb4.8++_4.8.30-bionic3_amd64.deb': 'b3ddd5da73816484304a747b526039ec143fe70c969168981813461ba4080233',
+    'libevent-core-2.1-6_2.1.8-stable-4build1_amd64.deb': 'b3cffa9ac341236250ef786dd55d4cd7eac6a36c87541df1cf4038239761256b',
+    'libevent-pthreads-2.1-6_2.1.8-stable-4build1_amd64.deb': '67a8152b242882100487f6ea5c364e142b163777f6b4490902e374719726fdaf',
+    'libminiupnpc10_1.9.20140610-4ubuntu2_amd64.deb': '11902e06fda5689053b5bbf3f5861343eef4f2e725c70833bdcaa105f0e033ce',
+    'libpgm-5.2-0_5.2.122~dfsg-2_amd64.deb': '22db07cf0d827a1b96ae2243fc832f8b55d91543faebc0fbb374893b7b079b1b',
+    'libsodium23_1.0.16-2_amd64.deb': '2620628ebe077a92003464d544e273e00ac58c29d62c7a7d7178dc13ee913152',
+    'libssl1.1_1.1.0g-2ubuntu4_amd64.deb': '82e424d50e144320319414a1964d3a980abde4bc39fc7d8c2885819328cb5cb4',
+    'libzmq5_4.2.5-1_amd64.deb': 'a584e32363a975735aefec1a11edc84cc8444eca8157b590d44c229d7500ead5',
+    'libqrencode3_3.4.4-1build1_amd64.deb': 'e2815703e5ed29f47a8434fbc23535b7bdd938e4483c925bfbc92414f2715d56',
+    'qrencode_3.4.4-1build1_amd64.deb': '7b46f0f4d2a985f7130c14902b1cbfae1b26558d2609f4b38e4196d6321fe18c',
+    'libnorm1_1.5r6+dfsg1-6_amd64.deb': 'd16894811280faa258b132786870b9adfc264d50bf844c0ee990291114652da9',
 }
 
 def prefilled_input(prompt, text):
@@ -47,14 +41,8 @@ def prefilled_input(prompt, text):
     return result
 
 def check_ubuntu():
-    if platform.machine() == 'x86_64':
-        size=1485881344
-        cdrom='4bcec83ef856c50c6866f3b0f3942e011104b5ecc6d955d1e7061faff86070d4'
-    elif platform.machine() == 'i686':
-        size=1504051200
-        cdrom='b20b956b5f65dff3650b3ef4e758a78a2a87152101a04ea1804f993d8e551ceb'
-    else:
-        sys.exit('Unknown platform {}'.format(platform.machine()))
+    size=1921843200
+    cdrom='a55353d837cbf7bc006cf49eeff05ae5044e757498e30643a9199b9a25bc9a34'
 
     output=subprocess.run('dd status=none if=/dev/cdrom count={} | sha256sum'.format(int(size / 512)),
                           shell=True, check=True, universal_newlines=True,
@@ -62,30 +50,23 @@ def check_ubuntu():
     if output != cdrom + "  -\n":
         sys.exit('Bad ubuntu image')
 
-def select_debs():
-    if platform.machine() == 'x86_64':
-        return DEBS_AMD64
-    elif platform.machine() == 'i686':
-        return DEBS_X86
-    sys.exit('Unknown platform {}'.format(platform.machine()))
-
 def goto_debdir():
     dirs=os.listdir('/media/ubuntu')
     if len(dirs) != 1:
         sys.exit('More than one USB inserted?')
     os.chdir('/media/ubuntu/' + dirs[0])
 
-def check_debs(sums):
-    for d in sums.keys():
+def check_debs():
+    for d in DEBS.keys():
         output=subprocess.run(['sha256sum', d],
                               universal_newlines=True, check=True,
                               stdout=subprocess.PIPE).stdout
-        if output != '{}  {}\n'.format(sums[d], d):
+        if output != '{}  {}\n'.format(DEBS[d], d):
             sys.exit('Bad package {}'.format(d))
 
-def install_debs(debs):
+def install_debs():
     cmd=['sudo', 'dpkg', '-i']
-    cmd.extend(debs)
+    cmd.extend(DEBS.keys())
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
 
 def stop_bitcoin():
@@ -98,7 +79,7 @@ def start_bitcoin():
     # Make sure it's started.
     end=time.clock() + 10
     while time.clock() < end:
-        if subprocess.run(['bitcoin-cli', 'getinfo'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+        if subprocess.run(['bitcoin-cli', 'ping'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
             return
         time.sleep(0.5)
 
@@ -134,7 +115,7 @@ def json_from_bitcoin_cli(*args):
 def new_key():
     print('Generating address', end='...', flush=True)
     time.sleep(1)
-    tmpaddr=bitcoin_cli_simple('getnewaddress')
+    tmpaddr=bitcoin_cli_simple('getnewaddress', 'p2sh-segwit')
     tmpprivkey=bitcoin_cli_simple('dumpprivkey', tmpaddr)
     print('SUCCESS')
 
@@ -154,6 +135,11 @@ def bitcoin_to_satoshi(value):
 def satoshi_to_bitcoin(amount):
     return float(amount / 1e8)
 
+def get_p2sh_addresses():
+    # We want the P2SH addresses.
+    P2SH_prefix='3'
+    return [addr for addr in json_from_bitcoin_cli('getaddressesbyaccount', '') if addr.startswith(P2SH_prefix)]
+
 def check_key():
     global addr
     global privkey
@@ -163,10 +149,10 @@ def check_key():
 
     # There's no good way to figure out the address, except diff before
     # and after.  Blech!
-    before_addresses=set(json_from_bitcoin_cli('getaddressesbyaccount', ''))
+    before_addresses=set(get_p2sh_addresses())
     if bitcoin_cli('importprivkey', privkey.replace(" ", "")).returncode == 0:
         print('Key is VALID!')
-        after_addresses=set(json_from_bitcoin_cli('getaddressesbyaccount', ''))
+        after_addresses=set(get_p2sh_addresses())
 
         diff=after_addresses - before_addresses
         if len(diff) == 1:
@@ -176,7 +162,7 @@ def check_key():
             print('Re-import of existing key?  One of:')
             for k in after_addresses:
                 print('  ' + k)
-            addr=input('Please enter the public key: ')
+            addr=input('Please enter the address: ')
             if addr not in after_addresses:
                 print('{} is not one of those.  Try again'.format(addr))
                 addr=None
@@ -195,12 +181,8 @@ def spend_tx():
     global dest_addr
     global change_addr
 
-    # We assume input was a standard pay to pubkey hash, and fool bitcoind
-    # into generating one for us.
     print('Generating public keyscript for {}'.format(addr), end='...', flush=True)
-    scriptpubkey = bitcoin_cli_simple('createrawtransaction',
-                                      '[{"txid":"' + '0' * 32 + '","vout":0}]',
-                                      '{{"{}":0}}'.format(addr))[112:162]
+    scriptpubkey = json_from_bitcoin_cli('validateaddress', addr)['scriptPubKey']
     print('SUCCESS')
     tx=prefilled_input('Enter transaction ID (64 characters) or raw transaction: ',
                        tx)
@@ -250,8 +232,8 @@ def spend_tx():
         dest_amount_satoshis=bitcoin_to_satoshi(float(dest_amount))
         change_addr=prefilled_input('Address for change: ', change_addr)
 
-        # Tx with two outputs is about 225 bytes.
-        fee_satoshis=int(fee_rate * 225 / 1000)
+        # Tx with two outputs is about 170 vbytes.
+        fee_satoshis=int(fee_rate * 170 / 1000)
         change_amount_satoshis=input_amount_satoshis - dest_amount_satoshis - fee_satoshis
 
         # Sanity check for tiny or negative change (or weird fee).
@@ -259,8 +241,8 @@ def spend_tx():
             print("Change amount {:.8f} too small (fee is {:.8f})".format(satoshi_to_bitcoin(change_amount_satoshis), satoshi_to_bitcoin(fee_satoshis)))
             return
     else:
-        # Tx with one output is about 192 bytes.
-        fee_satoshis=int(fee_rate * 192 / 1000)
+        # Tx with one output is about 135 vbytes.
+        fee_satoshis=int(fee_rate * 135 / 1000)
         dest_amount_satoshis=input_amount_satoshis - fee_satoshis
         change_addr=None
 
@@ -313,9 +295,10 @@ def spend_tx():
 
     print('SUCCESS')
 
+    redeemscript=json_from_bitcoin_cli('validateaddress', addr)['hex']
     print('Signing raw transaction', end='...', flush=True)
     signed_tx=json_from_bitcoin_cli('signrawtransaction', raw_tx.stdout.rstrip(),
-                                    '[{{"txid":"{}","vout":{},"scriptPubKey":"{}"}}]'.format(txid, vout, scriptpubkey))
+                                    '[{{"txid":"{}","vout":{},"scriptPubKey":"{}","redeemScript":"{}","amount":{}}}]'.format(txid, vout, scriptpubkey, redeemscript,input_amount))
     print('SUCCESS')
 
     if change_addr is not None:
@@ -356,11 +339,10 @@ print("Rusty's Remarkable Unreliable Bitcoin Storage Script")
 print('----------------------------------------------------');
 goto_debdir()
 print('Checking bitcoin and friends', end='...', flush=True)
-sums=select_debs()
-check_debs(sums)
+check_debs()
 print('OK')
 print('Installing bitcoin and friends', end='...', flush=True)
-install_debs(sums.keys())
+install_debs()
 print('OK')
 
 print('Starting bitcoin', end='...', flush=True)

@@ -1,4 +1,4 @@
-# Rusty's Remarkably Unreliable Guide To Bitcoin Storage: 2016 Edition
+# Rusty's Remarkably Unreliable Guide To Bitcoin Storage: 2018 Edition
 
 ## About This Guide
 
@@ -31,7 +31,7 @@ innovation developers Blockstream because I told them bitcoin is like
 Linux and I know Linux (no, really!).
 
 Part of this salary deal was about $5000 of bitcoin per year, paid
-monthly after the first year.  Now that first year is up, I decided to
+monthly after the first year.  I decided to
 document what I'm doing in the hope that greater minds will provide
 feedback on what I did wrong.  And then return my coins please...
 
@@ -62,7 +62,7 @@ goals, so I'm going to provide a quick guide:
 	* Risks: they could get hacked, go bankrupt, or stop your account.
 	* Pros: really easy to use.
 
-2.  Small investment.  For less than $1000, my preference would be
+2.  Small investment.  For less than $10000, my preference would be
     any service which doesn't control your keys, say using 2 of 3
     multi-sig, where you control 2 and they control 1.  I've only got
 	experience with the
@@ -71,7 +71,7 @@ goals, so I'm going to provide a quick guide:
     factor for spending above your chosen limit, ability to save your
     wallet phrase in case you lose your phone, a failsafe if they
     ever vanish, and they don't have access to your coins.
-	(Disclaimer: I have a potential financial incentive in their success).
+	(Disclaimer: I have Blockstream stock, and they own GreenAddress).
 
 	* Risks: if you use SMS verification on the same phone as the
 	  Greenbits wallet, software which hacks your phone could
@@ -80,13 +80,14 @@ goals, so I'm going to provide a quick guide:
 	  app), the hacker would have to hack both phone and laptop.
 	* Pros: almost as easy to use.
 
-3.  Larger investment.  For less than $10000, you could use a
-    hardware wallet with a screen.  The only current option here is
-    the Trezor<sup>[4](#trezor)</sup>; it's probably possible to extract the secret key from
+3.  Larger investment.  For less than $50000, you could use a
+    hardware wallet with a screen.  The main options here are
+    the Trezor<sup>[4](#trezor)</sup> and the Ledger<sup>[5](#ledger)</sup>; it's probably possible to extract the secret key from
     the device, but it'd be fairly hard (thus, not worthwhile) and
 	they'd almost certainly need physical access.
 
-    * Risks: if someone hacks your laptop, they could silently change
+    * Risks: the device might be replaced (or "pre-initialized") before you get it.
+	  If someone hacks your laptop, they could silently change
       the address where you're sending the funds, so you want to
       double-check the address using another device for large
       transfers.  They can't change the amount though.
@@ -129,15 +130,13 @@ The extra paranoid will destroy or never reuse those the USB keys in
 any other machine, maim the laptop, ensure it stays offline forever or
 destroy it: you can simply buy a cheap $200 laptop or use an old one.
 
-### Step 1: Download and Prepare Ubuntu 16.04 (20 minutes)
+### Step 1: Download and Prepare Ubuntu 18.04 (20 minutes)
 
 Ubuntu is a simple, free operating system.  It's easy to install and
 use, and downloaded thousands of times each day.  You can get it from
-[http://releases.ubuntu.com/16.04/ubuntu-16.04-desktop-amd64.iso](http://releases.ubuntu.com/16.04/ubuntu-16.04-desktop-amd64.iso).
-My test laptop was so over 10 years old so it didn't support 64 bit (I
-got a message about "This kernel requires an x86-64 CPU"), so I used
-[http://releases.ubuntu.com/16.04/ubuntu-16.04-desktop-i386.iso](http://releases.ubuntu.com/16.04/ubuntu-16.04-desktop-i386.iso)
-instead.
+[http://releases.ubuntu.com/18.04/ubuntu-18.04-desktop-amd64.iso](http://releases.ubuntu.com/18.04/ubuntu-18.04-desktop-amd64.iso).
+You will need a recent laptop (if it's over 10 years old, it might not
+support 64 bit, and you'll get a message about "This kernel requires an x86-64 CPU").
 
 You should check that you have the real Ubuntu, if you can.  On Linux
 and MacOS this is easy, on Windows you'll need
@@ -145,27 +144,22 @@ and MacOS this is easy, on Windows you'll need
 Use the following commands to sum the file you downloaded, which should
 match the example below:
 
-* **MacOS**: shasum -a 256 /tmp/ubuntu-16.04-desktop-amd64.iso
-* **Windows**: sha256sum.exe ubuntu-16.04-desktop-amd64.iso
-* **Linux**: sha256sum /tmp/ubuntu-16.04-desktop-amd64.iso
+* **MacOS**: shasum -a 256 /tmp/ubuntu-18.04-desktop-amd64.iso
+* **Windows**: sha256sum.exe ubuntu-18.04-desktop-amd64.iso
+* **Linux**: sha256sum /tmp/ubuntu-18.04-desktop-amd64.iso
 
 This should give a number
-<!--- sha256sum ubuntu-16.04-desktop-amd64.iso --->
-`4bcec83ef856c50c6866f3b0f3942e011104b5ecc6d955d1e7061faff86070d4`
-
-(For 32-bit Ubuntu, the number is
-<!--- sha256sum ubuntu-16.04-desktop-i386.iso --->
-`b20b956b5f65dff3650b3ef4e758a78a2a87152101a04ea1804f993d8e551ceb`
-instead).
+<!--- sha256sum ubuntu-18.04-desktop-amd64.iso --->
+`a55353d837cbf7bc006cf49eeff05ae5044e757498e30643a9199b9a25bc9a34`
 
 If the number you get is different, STOP.  Something is badly wrong.
 
 Now we need put it on the big USB, so we can install it on the cheap
 laptop; here are instructions for
-[Windows](http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows),
-[MacOS](http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-mac-osx)
+[Windows](https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows),
+[MacOS](https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-mac-osx)
 and
-[Linux](http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu).
+[Linux](https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu).
 
 #### Extra Paranoia (Optional)
 
@@ -176,34 +170,27 @@ DVD burner so you know it can never write anything back.
 
 Format the small USB key and put the helper script which matches this HOWTO:
 
-* [offline](https://raw.githubusercontent.com/rustyrussell/bitcoin-storage-guide/v0.2.1/offline)
+* [offline](raw.githubusercontent.com/rustyrussell/bitcoin-storage-guide/v0.3.0/offline)
 
-You also need bitcoin and friends on the USB key (unless your laptop
-is ancient like mine, see below):
+You also need bitcoin and friends on the USB key:
 
-*  [bitcoind](https://launchpad.net/~bitcoin/+archive/ubuntu/bitcoin/+files/bitcoind_0.12.1-xenial1_amd64.deb)
-*  [db4.8++](https://launchpad.net/~bitcoin/+archive/ubuntu/bitcoin/+files/libdb4.8++_4.8.30-xenial2_amd64.deb)
-*  [libboost-chrono](https://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.58/libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb)
-*  [libboost-program-options](https://mirrors.kernel.org/ubuntu/pool/main/b/boost1.58/libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb)
-*  [libboost-thread](https://mirrors.kernel.org/ubuntu/pool/main/b/boost1.58/libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_amd64.deb)
-*  [libevent-core](https://mirrors.kernel.org/ubuntu/pool/main/libe/libevent/libevent-core-2.0-5_2.0.21-stable-2_amd64.deb)
-*  [libevent-pthreads](https://mirrors.kernel.org/ubuntu/pool/main/libe/libevent/libevent-pthreads-2.0-5_2.0.21-stable-2_amd64.deb)
-*  [libssl](http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.0.0_1.0.2g-1ubuntu4.1_amd64.deb)
-*  [qrencode](https://mirrors.kernel.org/ubuntu/pool/universe/q/qrencode/qrencode_3.4.4-1_amd64.deb)
-*  [libqrencode](https://mirrors.kernel.org/ubuntu/pool/universe/q/qrencode/libqrencode3_3.4.4-1_amd64.deb)
-
-Here are the 32-bit versions if your system is too old:
-
-*  [bitcoind](https://launchpad.net/~bitcoin/+archive/ubuntu/bitcoin/+files/bitcoind_0.12.1-xenial1_i386.deb)
-*  [db4.8++](https://launchpad.net/~bitcoin/+archive/ubuntu/bitcoin/+files/libdb4.8++_4.8.30-xenial2_i386.deb)
-*  [libboost-chrono](https://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.58/libboost-chrono1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb)
-*  [libboost-program-options](https://mirrors.kernel.org/ubuntu/pool/main/b/boost1.58/libboost-program-options1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb)
-*  [libboost-thread](https://mirrors.kernel.org/ubuntu/pool/main/b/boost1.58/libboost-thread1.58.0_1.58.0+dfsg-5ubuntu3_i386.deb)
-*  [libevent-core](https://mirrors.kernel.org/ubuntu/pool/main/libe/libevent/libevent-core-2.0-5_2.0.21-stable-2_i386.deb)
-*  [libevent-pthreads](https://mirrors.kernel.org/ubuntu/pool/main/libe/libevent/libevent-pthreads-2.0-5_2.0.21-stable-2_i386.deb)
-*  [libssl](http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.0.0_1.0.2g-1ubuntu4.1_i386.deb)
-*  [qrencode](https://mirrors.kernel.org/ubuntu/pool/universe/q/qrencode/qrencode_3.4.4-1_i386.deb)
-*  [libqrencode](https://mirrors.kernel.org/ubuntu/pool/universe/q/qrencode/libqrencode3_3.4.4-1_i386.deb)
+* [bitcoind](https://launchpad.net/~bitcoin/+archive/ubuntu/bitcoin/+files/bitcoind_0.16.0-bionic1_amd64.deb)
+* [libdb4.8++](https://launchpad.net/~bitcoin/+archive/ubuntu/bitcoin/+files/libdb4.8++_4.8.30-bionic3_amd64.deb)
+* [libboost-chrono1.65.1](https://mirrors.kernel.org/ubuntu/pool/main/b/boost1.65.1/libboost-chrono1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb)
+* [libboost-filesystem1.65.1](https://mirrors.kernel.org/ubuntu/pool/main/b/boost1.65.1/libboost-filesystem1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb)
+* [libboost-program-options1.65.1](https://mirrors.kernel.org/ubuntu/pool/main/b/boost1.65.1/libboost-program-options1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb)
+* [libboost-system1.65.1](https://mirrors.kernel.org/ubuntu/pool/main/b/boost1.65.1/libboost-system1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb)
+* [libboost-thread1.65.1](https://mirrors.kernel.org/ubuntu/pool/main/b/boost1.65.1/libboost-thread1.65.1_1.65.1+dfsg-0ubuntu5_amd64.deb)
+* [libevent-core](https://mirrors.kernel.org/ubuntu/pool/main/libe/libevent/libevent-core-2.1-6_2.1.8-stable-4build1_amd64.deb)
+* [libevent-pthreads](https://mirrors.kernel.org/ubuntu/pool/main/libe/libevent/libevent-pthreads-2.1-6_2.1.8-stable-4build1_amd64.deb)
+* [libminiupnpc10](https://mirrors.kernel.org/ubuntu/pool/main/m/miniupnpc/libminiupnpc10_1.9.20140610-4ubuntu2_amd64.deb)
+* [libssl1.1](https://mirrors.kernel.org/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb)
+* [libzmq5](https://mirrors.kernel.org/ubuntu/pool/universe/z/zeromq3/libzmq5_4.2.5-1_amd64.deb)
+* [libsodium23](https://mirrors.kernel.org/ubuntu/pool/main/libs/libsodium/libsodium23_1.0.16-2_amd64.deb)
+* [libpgm-5.2-0](https://mirrors.kernel.org/ubuntu/pool/universe/libp/libpgm/libpgm-5.2-0_5.2.122~dfsg-2_amd64.deb)
+* [libnorm1](https://mirrors.kernel.org/ubuntu/pool/universe/libp/libpgm/libpgm-5.2-0_5.2.122~dfsg-2_amd64.deb)
+* [qrencode](https://mirrors.kernel.org/ubuntu/pool/universe/q/qrencode/qrencode_3.4.4-1build1_amd64.deb)
+* [libqrencode](https://mirrors.kernel.org/ubuntu/pool/universe/q/qrencode/libqrencode3_3.4.4-1build1_amd64.deb)
 
 #### Extra Paranoia (Optional)
 
@@ -235,21 +222,20 @@ secret transmitter, of course.  But we have to stop somewhere!
    the boot sequence.  Google is your friend here, for your particular
    laptop (or there may be a message on the screen).
 
-4. You'll see the purple Ubuntu background with a weird icon at the
-   bottom as it boots up.  Eventually you'll see a Welcome box.  On
-   the top right, you'll see 7 icons: the third from the left (looking
-   like a pie segment) is the networking icon.  Click on that, then
-   click on "Enable Networking" near the bottom: it has a tick on it,
-   which will go away, and it should say "Disconnected - you are now
-   offline".
+4. You'll see a black screen with some text.  You can select the "Try
+   Ubuntu without Installing" option and hit return or simply wait.
 
-5. Then select "Try Ubuntu", which will give you the "Ubuntu Desktop"
-   with various icons down the left hand side.
+5. You'll see a purple background with a dots blinking underneath
+   the word Ubuntu as it boots up.  Eventually you'll see a desktop.  On
+   the top right, you'll see 3 icons: left-click the top right, and
+   you should see "Wi-Fi Not Connected".  Left-click on that, then
+   click on "Turn Off".  Now you should see a little airplane on the
+   top right of the screen.
 
 5. Insert the small USB.
 
 6. Start a terminal: we're going to do the rest as manual commands.  Do this
-   by clicking on the top left swirly Ubuntu icon, and typing "terminal".
+   by clicking on the dots at the far bottom left, and typing "term".
    You'll see a TV icon with a `>_` in it: click on this.  We're going
    to type into that box where it says `ubuntu@ubuntu:~$ `.
 
@@ -260,7 +246,7 @@ secret transmitter, of course.  But we have to stop somewhere!
 
    You should get the following result numbers and letters (ignore after the space).  If not, STOP, something is wrong.
 <!--- sha256sum offline --->
-	  `c7ab4f6d839f4a5f6e35ced226537698c05e5af3708b5cd33bdfced3f0347c8e  /media/ubuntu/USBKEY/offline`
+	  `49437a011f8e888ecf2c8075d9467f0180e73b1d1405ffaab5d878961eb119bd  /media/ubuntu/USBKEY/offline`
 
 8. Hit F11 to make the terminal full screen.
 
@@ -276,14 +262,14 @@ secret transmitter, of course.  But we have to stop somewhere!
 
 3.  Type "create" then press enter.
 
-4.  You will get an address like "1DzQg9vuzBGUnAB5Z6vgZX8qabbM1ftxDf".
+4.  You will get an address like "342ftSRCvFHfCeFFBuz4xwbeqnDw6BGUey".
     Anyone can send bitcoin to this, and only the private key can
     spend it.  You will also get a private key like
     "L2b68o8EwXQQfWTu7K77Y7Pz9hLqzfb5vjVviJ8NadLXMWHdGYAv". This is a
     standard key you could import into other wallets later if you
     wanted to.
 
-5.  Write down the public address(es) (1...) on one piece of paper,
+5.  Write down the public address(es) (3...) on one piece of paper,
     and write down the private key(s) (L... or K...) on three pieces
     of paper.  It shows you where to split the key into two or three
 	parts, too.
@@ -322,7 +308,7 @@ never allow the laptop to go online ever again.
 
 ### Step 6: Store the Keys Safely
 
-The public address (1...) you can write on the fridge, record in your
+The public address (3...) you can write on the fridge, record in your
 diary, or email to your own gmail account.  The only reason to keep
 this secret is so that people don't know how many bitcoins you have.
 You can get this back as long as you have your private key, anyway.
@@ -395,7 +381,7 @@ You'll need:
    the recipient read it out to you over the phone.
 
 4. The fee rate you should pay to miners so they'll mine your
-   transaction.  I have no idea what this will be: 30000 satoshi per
+   transaction.  I have no idea what this will be: 5000 satoshi per
    kilobyte is currently reasonable.  Google for "bitcoin fee estimator"
    and you'll find several.
 
@@ -424,9 +410,7 @@ Now you have those:
 5. Quick way: you will tell it the output number and the amount that
    was sent.  If you get the output number or transaction ID wrong, it
    will fail when you try to broadcast the final transaction.  If you
-   get the amount wrong (too high) it will also fail then.  If you get
-   the amount wrong (too low) it will pay the difference to miners and
-   you will lose it.  Be very careful that the amount is correct!
+   get the amount wrong it will also fail then.
 
 6. Now enter the fee rate, and address to pay to.  Fees are required to
    get miners to include your transaction in a block.
@@ -457,7 +441,7 @@ seems huge.
 ### Extra Paranoia (Optional)
 
 Run your own bitcoin full node somewhere (online).  Use `bitcoin-cli
-importaddress 1DzQg9vuzBGUnAB5Z6vgZX8qabbM1ftxDf` (except with your
+importaddress 342ftSRCvFHfCeFFBuz4xwbeqnDw6BGUey` (except with your
 own public key).  You can do this once for each address, and use
 `bitcoin-cli getbalance` to see your bitcoins.  Use `bitcoin-cli
 listtransactions "*" 1000 0 true` to show received and sent
@@ -487,8 +471,12 @@ Rusty.
 
 <a name="trezor">[4]</a> [The Trezor Hardware Wallet](https://bitcointrezor.com/)
 
+<a name="Ledger">[5]</a> [The Ledger Hardware Wallet](https://www.ledgerwallet.com/)
+
 # License
 
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This guide is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+<img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a>
+<br />This guide is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
 
 The offline script is licensed under CC0 (public domain).

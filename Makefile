@@ -3,12 +3,15 @@ DEB_DIR=debs
 check: urlchecks sigchecks sumchecks
 
 urlchecks: README.md
-	@for url in `sed -n 's,.*\(http[^)]*\).*,\1,p' $<`; do if wget -q --spider $$url; then echo $$url OK; else echo $$url fail; exit 1; fi; done
+	@for url in `sed -n 's,.*\(http[^")]*\).*,\1,p' $< | grep -v '$${IGNORED_URLS:-xxxxx}'`; do if wget -q --spider $$url; then echo $$url OK; else echo $$url fail; exit 1; fi; done
 
 sigchecks: README.md
 	gpg --verify README.md.sig README.md
 
 sumchecks: README-sumchecks offline-sumchecks
+
+fetchdebs: README.md
+	cd debs && wget `sed -n 's,.*\(http[^)]*\.deb\).*,\1,p' ../$<`
 
 README-sumchecks: README.md
 	@sed -n '/^<!--- sha256sum .* --->/{$!{ N; s/.*sha256sum \(.*\) --->[^`]*`\([a-f0-9]*\).*/\1 \2/p;}}' $< | while read FILE SUM; do echo -n $$FILE...; if [ "`sha256sum $$FILE`" != "$$SUM  $$FILE" ]; then echo WRONG; exit 1; else echo OK; fi; done
