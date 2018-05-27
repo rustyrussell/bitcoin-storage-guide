@@ -2,6 +2,7 @@
 # Simple script to save typos and other frustrations for offline wallets.
 # Licenced under CC0 (Public domain), by Rusty Russell
 import argparse
+import glob
 import json
 import os
 import readline
@@ -51,10 +52,10 @@ def check_ubuntu():
         sys.exit('Bad ubuntu image')
 
 def goto_debdir():
-    dirs=os.listdir('/media/ubuntu')
-    if len(dirs) != 1:
-        sys.exit('More than one USB inserted?')
-    os.chdir('/media/ubuntu/' + dirs[0])
+    offline=glob.glob('/media/ubuntu/*/offline')
+    if len(offline) != 1:
+        sys.exit('More than one offline script found inserted?')
+    os.chdir(os.path.dirname(offline[0]))
 
 def check_debs():
     for d in DEBS.keys():
